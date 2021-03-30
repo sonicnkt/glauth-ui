@@ -1,11 +1,13 @@
 # VS Code Stuff
-.vsvode/
+.vscode/
 # Python Stuff
 venv/
 __pycache__/
 db/**
 docker-data/
+logs/
 .flaskenv
+.pylintrc
 docker-compose.yaml
 notes.txt
 
