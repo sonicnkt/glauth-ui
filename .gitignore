@@ -1,0 +1,10 @@
+# VS Code Stuff
+.vsvode/
+# Python Stuff
+venv/
+__pycache__/
+db/**
+docker-data/
+.flaskenv
+docker-compose.yaml
+
