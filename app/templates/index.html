@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="my-3">    
+        {% if current_user.givenname %}
+        <h2>Hello, {{ current_user.givenname + ' ' + current_user.surname }}!</h2>
+        {% else %}
+        <h2>Hello, {{ current_user.username }}!</h2>
+        {% endif %}
+    </div>
+    <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col" colspan="2">Profiledata</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Username</th>
+            <td class="text-primary">{{ current_user.username }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Givenname</th>
+            <td class="text-primary">{{ current_user.givenname }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Surname</th>
+            <td class="text-primary">{{ current_user.surname }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Email</th>
+            <td class="text-primary">{{ current_user.mail }}</td>
+          </tr>
+          <tr>
+            <th scope="row">UnixID</th>
+            <td class="text-danger">{{ current_user.unixid }}</td>
+          </tr>
+          <tr>
+            <th scope="row">Groups</th>
+            <td>
+                <ul class="list-group">
+                    <li class="list-group-item">{{ primarygroup }} <span class="badge badge-primary">Primary</span></li>    
+                    {% for group in current_user.othergroups %}
+                    <li class="list-group-item">{{ group.name }} <span class="badge badge-secondary">Secondary</span></li>
+                    {% endfor %}
+                </ul> 
+            </td>
+          </tr>
+                                    
+        </tbody>
+      </table>
+
+{% endblock %}

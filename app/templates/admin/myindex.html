@@ -1,0 +1,21 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+
+<h3>Overview</h3>
+<ul class="list-group">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <a href="{{ url_for('user.index_view') }}" class="text-dark">Users</a>
+      <span class="badge badge-primary badge-pill">{{ counts['users'] }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <a href="{{ url_for('group.index_view') }}" class="text-dark">Primary Groups</a>
+      <span class="badge badge-primary badge-pill">{{ counts['pgroups'] }}</span>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <a href="{{ url_for('group.index_view') }}" class="text-dark">Other Groups</a>
+      <span class="badge badge-primary badge-pill">{{ counts['ogroups'] }}</span>
+    </li>
+  </ul>
+ 
+{% endblock %}

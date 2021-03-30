@@ -1,0 +1,11 @@
+Dear {{ user.givenname + ' ' + user.surname }},
+
+Your personal account with the username "{{ user.username }}" has been created.
+
+To activate the account and configure your password use the following link in the next 24 hours:
+
+{{ url_for('new_account', token=token, _external=True) }}
+
+Sincerely,
+
+{{ config['ORGANISATION'] }} 

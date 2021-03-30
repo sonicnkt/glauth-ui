@@ -7,4 +7,6 @@ db/**
 docker-data/
 .flaskenv
 docker-compose.yaml
+notes.txt
+
 

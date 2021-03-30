@@ -1,0 +1,129 @@
+2021-03-26 15:27:52,051 ERROR: Exception on /admin/user/edit/ [GET] [in /home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py:1891]
+Traceback (most recent call last):
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/base.py", line 69, in inner
+    return self._run_view(f, *args, **kwargs)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/base.py", line 368, in _run_view
+    return fn(self, *args, **kwargs)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/model/base.py", line 2164, in edit_view
+    return self.render(template,
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/base.py", line 308, in render
+    return render_template(template, **kwargs)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/templating.py", line 137, in render_template
+    return _render(
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/templating.py", line 120, in _render
+    rv = template.render(context)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/jinja2/environment.py", line 1090, in render
+    self.environment.handle_exception()
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/jinja2/environment.py", line 832, in handle_exception
+    reraise(*rewrite_traceback_stack(source=source))
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/jinja2/_compat.py", line 28, in reraise
+    raise value.with_traceback(tb)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/templates/bootstrap4/admin/model/modals/edit.html", line 7, in top-level template code
+    {% block body %}
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/templates/bootstrap4/admin/model/modals/edit.html", line 18, in block "body"
+    {% call lib.form_tag(action=url_for('.edit_view', id=request.args.get('id'), url=return_url)) %}
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/jinja2/runtime.py", line 679, in _invoke
+    rv = self._func(*arguments)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/templates/bootstrap4/admin/lib.html", line 207, in template
+    {{ caller() }}
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/jinja2/runtime.py", line 679, in _invoke
+    rv = self._func(*arguments)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/templates/bootstrap4/admin/model/modals/edit.html", line 20, in template
+    {{ lib.render_form_fields(form, form_opts=form_opts) }}
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/jinja2/runtime.py", line 679, in _invoke
+    rv = self._func(*arguments)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/templates/bootstrap4/admin/lib.html", line 183, in template
+    {% for f in form if f.widget.input_type == 'hidden' %}
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/templates/bootstrap4/admin/lib.html", line 183, in template
+    {% for f in form if f.widget.input_type == 'hidden' %}
+TypeError: 'NoneType' object is not iterable
+2021-03-26 15:28:28,938 INFO: GLauth Management UI [in /home/nils/python/ldap/app/__init__.py:48]
+2021-03-26 15:28:35,153 ERROR: Exception on /admin/user/edit/ [GET] [in /home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py:1891]
+Traceback (most recent call last):
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/base.py", line 69, in inner
+    return self._run_view(f, *args, **kwargs)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/base.py", line 368, in _run_view
+    return fn(self, *args, **kwargs)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/model/base.py", line 2164, in edit_view
+    return self.render(template,
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/base.py", line 308, in render
+    return render_template(template, **kwargs)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/templating.py", line 137, in render_template
+    return _render(
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/templating.py", line 120, in _render
+    rv = template.render(context)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/jinja2/environment.py", line 1090, in render
+    self.environment.handle_exception()
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/jinja2/environment.py", line 832, in handle_exception
+    reraise(*rewrite_traceback_stack(source=source))
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/jinja2/_compat.py", line 28, in reraise
+    raise value.with_traceback(tb)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/templates/bootstrap4/admin/model/modals/edit.html", line 7, in top-level template code
+    {% block body %}
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/templates/bootstrap4/admin/model/modals/edit.html", line 18, in block "body"
+    {% call lib.form_tag(action=url_for('.edit_view', id=request.args.get('id'), url=return_url)) %}
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/jinja2/runtime.py", line 679, in _invoke
+    rv = self._func(*arguments)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/templates/bootstrap4/admin/lib.html", line 207, in template
+    {{ caller() }}
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/jinja2/runtime.py", line 679, in _invoke
+    rv = self._func(*arguments)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/templates/bootstrap4/admin/model/modals/edit.html", line 20, in template
+    {{ lib.render_form_fields(form, form_opts=form_opts) }}
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/jinja2/runtime.py", line 679, in _invoke
+    rv = self._func(*arguments)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/templates/bootstrap4/admin/lib.html", line 183, in template
+    {% for f in form if f.widget.input_type == 'hidden' %}
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/templates/bootstrap4/admin/lib.html", line 183, in template
+    {% for f in form if f.widget.input_type == 'hidden' %}
+TypeError: 'NoneType' object is not iterable
+2021-03-26 15:29:31,602 INFO: GLauth Management UI [in /home/nils/python/ldap/app/__init__.py:48]
+2021-03-26 15:29:39,924 ERROR: Exception on /admin/user/edit/ [GET] [in /home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py:1891]
+Traceback (most recent call last):
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/_compat.py", line 39, in reraise
+    raise value
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask/app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/base.py", line 69, in inner
+    return self._run_view(f, *args, **kwargs)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/base.py", line 368, in _run_view
+    return fn(self, *args, **kwargs)
+  File "/home/nils/python/ldap/venv/lib/python3.8/site-packages/flask_admin/model/base.py", line 2138, in edit_view
+    form = self.edit_form(obj=model)
+  File "/home/nils/python/ldap/app/adminview.py", line 111, in edit_form
+    form = self._edit_form_class(get_form_data(), obj=obj)
+NameError: name 'get_form_data' is not defined
+2021-03-27 12:47:52,453 INFO: GLauth Management UI [in /home/nils/python/ldap/app/__init__.py:48]
+2021-03-27 12:48:05,927 INFO: GLauth Management UI [in /home/nils/python/ldap/app/__init__.py:48]

@@ -1,0 +1,12 @@
+<p>Dear {{ user.givenname + ' ' + user.surname }},</p>
+<p>Your personal account with the username <bold>{{ user.username }}</bold> has been created.</p>
+<p>
+    To activate your account and configure your password
+    <a href="{{ url_for('new_account', token=token, _external=True) }}">
+        click here
+    </a>. This Activation link is valid for 24 hours.
+</p>
+<p>Alternatively, you can paste the following link in your browser's address bar:</p>
+<p>{{ url_for('new_account', token=token, _external=True) }}</p>
+<p>Sincerely,</p>
+<p>{{ config['ORGANISATION'] }} </p>
