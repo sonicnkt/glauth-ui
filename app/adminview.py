@@ -134,13 +134,19 @@ class UserView(MyModelView):
     # Customize EDIT/Create Form , obj = model object, needs to return a valid form Object in the End
     # Use this to customize which fields are available on new or edited users
     def create_form(self, obj=None):
-        form = super(MyModelView, self).create_form(obj)
+        form = super().create_form(obj)
         # Delete a form attribute
         delattr(form, 'send_pw_reset_link')
         # Modify query result for query form
         # Primarygroup.query.filter(Primarygroup.name.like('%test%')).all()
         form.pgroup.query = Group.query.filter_by(primary=True).all()
         form.othergroups.query = Group.query.filter_by(primary=False).all()
+
+        default_unixid=5001
+        highest_user=User.query.order_by(User.unixid.desc()).limit(1).all()
+        if highest_user:
+            default_unixid=highest_user[0].unixid+1
+        form.unixid.data=default_unixid
         return form
     
     def edit_form(self, obj):
