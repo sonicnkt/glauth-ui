@@ -271,6 +271,11 @@ class GroupView(MyModelView):
         delattr(form, 'included_in')
         delattr(form, 'p_users')
         delattr(form, 'o_users')
+        default_unixid=5500
+        highest_group=Group.query.order_by(Group.unixid.desc()).limit(1).all()
+        if highest_group:
+            default_unixid=highest_group[0].unixid+1
+        form.unixid.data=default_unixid
         return form
     
     def edit_form(self, obj):
