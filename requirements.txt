@@ -31,3 +31,4 @@ toml==0.10.2
 Werkzeug==1.0.1
 wrapt==1.12.1
 WTForms==2.3.3
+Authlib==0.13
