@@ -15,7 +15,7 @@ from app.glauth import create_glauth_config
 def index():
     pgroup_name = Group.query.filter_by(unixid=current_user.primarygroup).first().name
     #return render_template('index.html', title='Home', user=user)
-    return render_template("index.html", title='Home Page', primarygroup=pgroup_name)
+    return render_template("index.html", title='Profile', primarygroup=pgroup_name)
 
 @app.route('/testmail', methods=['GET', 'POST'])
 @login_required
@@ -91,7 +91,7 @@ def change_password():
         create_glauth_config()
         flash('Your password has been changed.')
         return redirect(url_for('index'))
-    return render_template('change_password.html', form=form)
+    return render_template('change_password.html', title='Change Password' form=form)
 
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
@@ -142,4 +142,4 @@ def new_account(token):
         flash('Your password has been set, please login.')
         return redirect(url_for('login'))
     fullname = '{}'.format(user.givenname + ' ' + user.surname)
-    return render_template('new_account.html', form=form, fullname=fullname)
+    return render_template('new_account.html', title='Activate Account', form=form, fullname=fullname)

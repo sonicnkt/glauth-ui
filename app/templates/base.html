@@ -12,9 +12,9 @@
         {% endblock %}
 
         {% if title %}
-        <title>{{ title }} - LDAP Management</title>
+        <title>{{ config['APPNAME'] }} - {{ title }}</title>
         {% else %}
-        <title>Welcome to LDAP Management</title>
+        <title>{{ config['APPNAME'] }}</title>
         {% endif %}
 
         {% endblock %}
