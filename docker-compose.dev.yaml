@@ -1,0 +1,30 @@
+version: '3.7'
+services:
+  ui:
+    build: .
+    container_name: glauth-ui-dev
+    restart: unless-stopped
+    ports:
+      - 801:5000
+    volumes:
+      # Mount Folder that contains DB and config file outside the container
+      - 'glauth:/home/ldap/db'
+    environment:
+      - SECRET_KEY=mysuperlongsecretkeythatnobodywillguess
+      # MAIL CONFIG
+      #- MAIL_SERVER=mail.example.com
+      #- MAIL_PORT=587
+      #- MAIL_USE_TLS=1
+      #- MAIL_USERNAME=username
+      #- MAIL_PASSWORD=password
+      #- MAIL_ADMIN=admin@example.com
+  glauth:
+    image: glauth/glauth
+    container_name: glauth-dev
+    command: glauth -c /config/
+    volumes:
+      - 'glauth:/config/config.cfg'
+
+volumes:
+  glauth:
+
