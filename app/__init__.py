@@ -21,9 +21,6 @@ login.login_view = 'login'
 mail = Mail(app)
 bootstrap = Bootstrap(app)
 
-#from .oauth import blueprint as oauth_blueprint
-#app.register_blueprint(oauth_blueprint, url_prefix="/oauth")
-
 
 if not app.debug:
     if app.config['MAIL_SERVER']:
@@ -63,6 +60,9 @@ def check_password_hash(hash, password):
     return True
 
 from app import routes, models, glauth, adminview, errors
+
+from .oauth import blueprint as oauth_blueprint
+app.register_blueprint(oauth_blueprint, url_prefix="/oauth")
 
 @app.cli.command()
 def createdbdata():
