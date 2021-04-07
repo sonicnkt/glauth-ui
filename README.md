@@ -27,49 +27,15 @@ Missing features:
 
 The best installation method atm is to build the docker image with the included Dockerfile. 
 
-1. Clone Repository
 ```
 git clone https://github.com/sonicnkt/glauth-ui.git glauth-ui
+docker-compose -f docker-compose.dev.yaml  up -d --build #Buld and deploy with docker compose
 ```
-2. Run docker build
-```
-cd glauth-ui
-docker build -t glauthui:latest . 
-
-```
-3. Create container
-
-`docker-compose.yaml`
-```
-version: '3.8'
-services:
-  glauthui:
-    image: glauthui:latest
-    container_name: glauthui
-    restart: unless-stopped
-    ports:
-      - 80:5000
-    volumes:
-      # Mount Folder that contains DB and config file outside the container
-      - './docker-data:/home/ldap/db'
-    environment:
-      - SECRET_KEY=mysuperlongsecretkeythatnobodywillguess
-      # MAIL CONFIG
-      - MAIL_SERVER=mail.example.com
-      - MAIL_PORT=587
-      - MAIL_USE_TLS=1
-      - MAIL_USERNAME=username
-      - MAIL_PASSWORD=password
-      - MAIL_ADMIN=admin@example.com
-```
-`docker-compose up #-d`
 
 On first startup (or if DB is empty) a sample database will be created with 2 users and 4 groups.
 Use the username "j_doe" and password "dogood" to login and have access to the administration interface. 
 
 This should be run behind a reverse proxy like nginx that handles https!
-
-4. Point glauth to the config.cfg created by glauth-ui
 
 ----
 
