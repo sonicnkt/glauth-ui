@@ -91,7 +91,7 @@ def change_password():
         create_glauth_config()
         flash('Your password has been changed.')
         return redirect(url_for('index'))
-    return render_template('change_password.html', title='Change Password' form=form)
+    return render_template('change_password.html', title='Change Password', form=form)
 
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
