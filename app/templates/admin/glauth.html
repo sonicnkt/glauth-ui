@@ -2,66 +2,26 @@
 
 {% block body %}
 
-<h2>Edit Settings</h2>
+<h2>Glauth Settings</h2>
 <p><span style="color: red;">A glauth server restart is required for these changes to take effect.</span></p>
+
+{% from 'bootstrap/form.html' import render_field %}
+
 <form action="" method="post">
 {{ form.hidden_tag() }}
-<table style="width: 580px;" border="0" cellspacing="1" cellpadding="1" bgcolor="#ffffff">
-    <tbody>
-        <tr bgcolor="#ffffff">
-            <td colspan="2"><b>General</b><br/></td>
-        </tr>
-        <tr bgcolor="#ffffff">
-
-            <td>{{ form.debug.label }}</td>
-            <td>{{ form.debug() }}</td>
-        </tr>
-        <tr bgcolor="#ffffff">
-            <td colpan="2"><b>LDAP</b><br/></td>
-        </tr>
-        <tr bgcolor="#ffffff">
-            <td>{{ form.ldap_enabled.label }}</td>
-            <td>{{ form.ldap_enabled() }}</td>
-        </tr>
-        <tr bgcolor="#ffffff">
-            <td>{{ form.ldap_listen.label }}</td>
-            <td>{{ form.ldap_listen(size=40) }}</td>
-        </tr>
-        <tr bgcolor="#ffffff">
-            <td colpan="2"><b>LDAPS</b><br/></td>
-        </tr>
-        <tr bgcolor="#ffffff">
-            <td>{{ form.ldaps_enabled.label }}</td>
-            <td>{{ form.ldaps_enabled() }}</td>
-        </tr>
-        <tr bgcolor="#ffffff">
-            <td>{{ form.ldaps_listen.label }}</td>
-            <td>{{ form.ldaps_listen(size=40) }}</td>
-        </tr>
-        <tr bgcolor="#ffffff">
-            <td>{{ form.ldaps_cert.label }}</td>
-            <td>{{ form.ldaps_cert(size=40) }}</td>
-        </tr>
-        <tr bgcolor="#ffffff">
-            <td>{{ form.ldaps_key.label }}</td>
-            <td>{{ form.ldaps_key(size=40) }}</td>
-        </tr>
-        <tr bgcolor="#ffffff">
-            <td colpan="2"><b>Backend</b><br/></td>
-        </tr>
-        <tr bgcolor="#ffffff">
-            <td>{{ form.basedn.label }}</td>
-            <td>{{ form.basedn(size=40) }}</td>
-        </tr>
-        <tr>
-            <td bgcolor="#FFFFFF" style="line-height:10px;" colspan=2>&nbsp;</td>
-        </tr>
-        <tr bgcolor="#ffffff">
-            <td></td>
-            <td style="text-align: right;">{{ form.submit() }}</td>
-        </tr>
-    </tbody>
-    </table>
+<p><strong>General</strong></p>
+{{ render_field(form.debug) }}
+<p><strong>LDAP</strong></p>
+{{ render_field(form.ldap_enabled) }}
+{{ render_field(form.ldap_listen, form_type="horizontal", horizontal_columns=('lg', 2, 6)) }}
+<p><strong>LDAPS</strong></p>
+{{ render_field(form.ldaps_enabled) }}
+{{ render_field(form.ldaps_listen, form_type="horizontal", horizontal_columns=('lg', 2, 6)) }}
+{{ render_field(form.ldaps_cert, form_type="horizontal", horizontal_columns=('lg', 2, 6)) }}
+{{ render_field(form.ldaps_key, form_type="horizontal", horizontal_columns=('lg', 2, 6)) }}
+<p><strong>Backend</strong></p>
+{{ render_field(form.basedn, form_type="horizontal", horizontal_columns=('lg', 2, 6)) }}
+{{ render_field(form.submit) }}
 </form>
 
 
