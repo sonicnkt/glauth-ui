@@ -123,7 +123,7 @@ class UserView(MyModelView):
     )
 
     # Configure which form fields to show
-    form_columns = ('send_pw_reset_link', 'send_invite_link', 'username', 'givenname', 'surname', 'mail', 'password', 'unixid', 'is_active', 'pgroup', 'othergroups')
+    form_columns = ('send_pw_reset_link', 'send_invite_link', 'username', 'password', 'givenname', 'surname', 'mail', 'unixid', 'is_active', 'pgroup', 'othergroups')
 
     # Configure which columns are shown in detail view
     column_details_exclude_list = ['password_hash']
@@ -335,7 +335,7 @@ class GlauthConfig(MyBaseView):
             settings.basedn = form.basedn.data
             db.session.commit()
             create_glauth_config()
-            flash('Glauth settings have been changed, please restart glauth.')
+            flash('Glauth settings have been changed, please restart glauth server.')
             
         if request.method == 'GET':
             # Populate form with stored config

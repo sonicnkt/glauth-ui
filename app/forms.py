@@ -33,10 +33,10 @@ class EditProfileForm(FlaskForm):
 
 class EditGlauthForm(FlaskForm):
     debug = BooleanField('Debug Mode')
-    ldap_enabled = BooleanField('Enable')
-    ldap_listen = StringField('Listen Address and Port', render_kw={"placeholder": "0.0.0.0:389"})
-    ldaps_enabled = BooleanField('Enable')
-    ldaps_listen = StringField('Listen Address and Port', render_kw={"placeholder": "0.0.0.0:636"})
+    ldap_enabled = BooleanField('Enable LDAP')
+    ldap_listen = StringField('Address and Port', render_kw={"placeholder": "0.0.0.0:389"})
+    ldaps_enabled = BooleanField('Enable LDAPS')
+    ldaps_listen = StringField('Address and Port', render_kw={"placeholder": "0.0.0.0:636"})
     ldaps_cert = StringField('Certificate', render_kw={"placeholder": "/path/to/server.crt"}) # Required if ldaps_enabled
     ldaps_key = StringField('Key', render_kw={"placeholder": "/path/to/server.key"}) # Required if ldaps_enabled
     basedn = StringField('BaseDN', render_kw={"placeholder": "dc=glauth,dc=com"}) # Data Required
