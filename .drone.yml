@@ -5,5 +5,9 @@ steps:
 - name: docker  
   image: plugins/docker
   settings:
-    repo: glauth-ui
+    repo: traverseda/glauth-ui
     auto_tag: true
+    username:
+      from_secret: dockerhub_user
+    password:
+      from_secret: dockerhub_pass

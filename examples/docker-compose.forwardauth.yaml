@@ -1,0 +1,52 @@
+version: '3.7'
+
+services:
+  traefik:
+    image: traefik
+    command: >
+      --log.level=DEBUG
+      --api.insecure=true
+      --providers.docker=true
+      --providers.docker.exposedbydefault=false
+      --entrypoints.web.address=:80
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  whoami:
+    image: "traefik/whoami"
+    labels:
+      traefik.enable: true
+      traefik.http.routers.whoami.rule: Host(`whoami.localhost`)
+      traefik.http.services.whoami.loadbalancer.server.port: 80
+      traefik.http.routers.whoami.entrypoints: web
+      traefik.http.routers.whoami.middlewares: traefik-forward-auth
+
+  glauth-ui:
+    build: ../
+    restart: unless-stopped
+    volumes:
+      # Mount Folder that contains DB and config file outside the container
+      - 'glauth:/home/ldap/db'
+    environment:
+      - SECRET_KEY=mysuperlongsecretkeythatnobodywillguess
+    labels:
+      traefik.enable: true
+      traefik.http.routers.auth.rule: Host(`auth.localhost`)
+      traefik.http.services.auth.loadbalancer.server.port: 5000
+      traefik.http.routers.auth.entrypoints: web
+      traefik.http.middlewares.traefik-forward-auth.forwardauth.address: http://glauth-ui:5000/forward_auth/
+
+  glauth:
+    image: glauth/glauth
+    ports:
+      - "389:389"
+    command: /app/glauth -c /config/config.cfg
+    volumes:
+      - 'glauth:/config/'
+
+volumes:
+  glauth:
+

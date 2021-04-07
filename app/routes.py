@@ -1,4 +1,5 @@
 from flask import render_template, flash, redirect, url_for, request, abort
+import flask
 from app import app, db
 from app.forms import LoginForm, EditProfileForm, ChangePasswordForm 
 from app.forms import ResetPasswordRequestForm, ResetPasswordForm, NewAccountForm
@@ -143,3 +144,7 @@ def new_account(token):
         return redirect(url_for('login'))
     fullname = '{}'.format(user.givenname + ' ' + user.surname)
     return render_template('new_account.html', form=form, fullname=fullname)
+
+@app.route('/forward_auth/', methods=['GET', 'POST'])
+def forward_auth():
+    return flask.Response(status=201)
