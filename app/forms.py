@@ -45,9 +45,10 @@ class EditGlauthForm(FlaskForm):
     # Add Custom Validation, either ldap or ldaps must be enabled?
 
 class ChangePasswordForm(FlaskForm):
-    oldpassword = PasswordField('Previous Password', validators=[DataRequired()])
-    newpassword1 = PasswordField('New Password', validators=[DataRequired()])
-    newpassword2 = PasswordField('Repeat Password', validators=[DataRequired(), Length(min=6, max=20), EqualTo('newpassword1')])
+    oldpassword = PasswordField('Current Password', validators=[DataRequired()], render_kw={"autocomplete": "off"})
+    newpassword1 = PasswordField('New Password', validators=[DataRequired()], render_kw={"autocomplete": "new-password"})
+    newpassword2 = PasswordField('Repeat Password', validators=[DataRequired(), Length(min=6, max=20), EqualTo('newpassword1')],
+                                 render_kw={"autocomplete": "new-password"}, description='TEST')
     submit = SubmitField('Change Password')
 
     def __init__(self, old_password_hash, *args, **kwargs):
