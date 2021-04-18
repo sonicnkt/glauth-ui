@@ -31,7 +31,9 @@ services:
       # Mount Folder that contains DB and config file outside the container
       - 'glauth:/home/ldap/db'
     environment:
-      - SECRET_KEY=mysuperlongsecretkeythatnobodywillguess
+      SECRET_KEY: mysuperlongsecretkeythatnobodywillguess
+      BASE_URL: auth.localhost
+
     labels:
       traefik.enable: true
       traefik.http.routers.auth.rule: Host(`auth.localhost`)

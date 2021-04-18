@@ -1,5 +1,4 @@
 from flask import render_template, flash, redirect, url_for, request, abort
-import flask
 from app import app, db
 from app.forms import LoginForm, EditProfileForm, ChangePasswordForm 
 from app.forms import ResetPasswordRequestForm, ResetPasswordForm, NewAccountForm
@@ -35,8 +34,8 @@ def testmail():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
-    
-    form = LoginForm() 
+
+    form = LoginForm()
     if form.validate_on_submit():
         #flash('Login requested for user {} with pw {}, remember_me={}'.format(
         #    form.username.data, form.password.data, form.remember_me.data))
@@ -51,6 +50,7 @@ def login():
             flash('Account not eligable to login.')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
+
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':    
             return redirect(url_for('index'))
@@ -145,6 +145,35 @@ def new_account(token):
     fullname = '{}'.format(user.givenname + ' ' + user.surname)
     return render_template('new_account.html', form=form, fullname=fullname)
 
-@app.route('/forward_auth/', methods=['GET', 'POST'])
-def forward_auth():
-    return flask.Response(status=201)
+from flask_wtf import csrf
+
+@app.route('/forward_auth/', methods=['GET', 'POST'], subdomain="<subdomain>")
+def forward_auth(subdomain):
+    protocol = request.headers.get('X-Forwarded-Proto')
+    host = request.headers.get('X-Forwarded-Host')
+    uri = request.headers.get('X-Forwarded-Uri')
+    origin = protocol+"://"+host+uri
+    method = request.headers.get('X-Forwarded-Method')
+
+    #Whitelist based on IP address, wish there was some way to whitelist based on
+    # docker service name. Maybe traefik will do something about it.
+    #ToDo: If somone wants maybe add IP range whitelisting? I just did this because it
+    # was very easy to do, and someone might find it useful.
+    sourceIp=request.headers.get('X-Forwarded-For',None)
+    if sourceIp in request.args.getlist('ip'):
+        return "", 201
+
+    if current_user.is_anonymous:
+        return render_template('forward_auth.html'), 401
+        loginpage = login(internal_redirect=origin)
+        if type(loginpage)==str:
+            return loginpage, 401
+        return loginpage
+
+    #Simple no DB based group lookup, configurable via client env variable
+    #Makes sure the user is in one of the groups passed as a `group` querystring arg.
+    allowed_groups = request.args.getlist('group')
+    if current_user.in_groups(*allowed_groups):
+        return "", 201
+
+    return abort(403)

@@ -8,6 +8,10 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
     ADMIN_GROUP = os.environ.get('ADMIN_GROUP') or 'glauth_admin'
 
+#    SESSION_COOKIE_DOMAIN = False
+    SESSION_COOKIE_NAME = "glauth-ui-session"
+    SESSION_COOKIE_SECURE = False
+
     # MAIL Config
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
