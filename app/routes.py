@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, abort
+from flask import render_template, flash, redirect, url_for, request, abort, Response
 from app import app, db
 from app.forms import LoginForm, EditProfileForm, ChangePasswordForm 
 from app.forms import ResetPasswordRequestForm, ResetPasswordForm, NewAccountForm
@@ -145,10 +145,42 @@ def new_account(token):
     fullname = '{}'.format(user.givenname + ' ' + user.surname)
     return render_template('new_account.html', form=form, fullname=fullname)
 
-from flask_wtf import csrf
+import base64
 
-@app.route('/forward_auth/', methods=['GET', 'POST'], subdomain="<subdomain>")
+@app.route('/forward_auth/header/', methods=['GET', 'POST'], subdomain="<subdomain>")
 def forward_auth(subdomain):
+    """The actual login is handled by flask_login
+    """
+    protocol = request.headers.get('X-Forwarded-Proto')
+    host = request.headers.get('X-Forwarded-Host')
+    uri = request.headers.get('X-Forwarded-Uri')
+    origin = protocol+"://"+host+uri
+    method = request.headers.get('X-Forwarded-Method')
+
+    #Whitelist based on IP address
+    sourceIp=request.headers.get('X-Forwarded-For',None)
+    if sourceIp in request.args.getlist('ip'):
+        return "", 201
+
+    if current_user.is_anonymous:
+        return Response(
+            f'Could not verify your access level for that {origin}.\n'
+            'You have to login with proper credentials\n', 401,
+            {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+    allowed_groups = request.args.getlist('group')
+    if current_user.in_groups(*allowed_groups):
+        return "", 201
+
+    return abort(403)
+
+#@app.route('/forward_auth/cookie/', methods=['GET', 'POST'], subdomain="<subdomain>")
+def forward_auth(subdomain):
+    """Unfortunatly implementing the CORS cookies in a clean way behind traefik is a bit beyond
+    me. There are things traefik could do to make this easier, like allow me to do a post
+    request to the auth server from behind the proxy, but alas.
+    """
+    raise NotImplementedError
     protocol = request.headers.get('X-Forwarded-Proto')
     host = request.headers.get('X-Forwarded-Host')
     uri = request.headers.get('X-Forwarded-Uri')

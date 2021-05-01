@@ -63,12 +63,12 @@ class User(UserMixin, db.Model):
     othergroups = db.relationship('Group', secondary=othergroups_users,
                             backref=db.backref('o_users', lazy='dynamic'))
 
-    def in_groups(self,*groups):
+    def in_groups(self,*allowed_groups):
         """Check is the user is in a group
         """
         #ToDo: Does this work recursivly with nested groups?
-        if self.primarygroup.name in groups:
-            return True
+        #if self.primarygroup.name in groups:
+        #    return True
         for group in self.othergroups:
             if group.name in allowed_groups:
                 return True
@@ -133,7 +133,8 @@ def http_basic_auth(request):
     authstr = request.headers.get("Authorization")
     if authstr:
         authstr=authstr.removeprefix("Basic ").lstrip().rstrip()
-        username, password = base64.b64decode(authstr).split(":")
+        authbytes = authstr.encode('utf-8') #We need to ensure it's bytes
+        username, password = base64.b64decode(authbytes).decode("utf-8").split(":")
         user = User.query.filter_by(username=username).first()
         if user.check_password(password):
             return user
