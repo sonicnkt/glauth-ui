@@ -208,4 +208,4 @@ def forward_auth(subdomain):
     if current_user.in_groups(*allowed_groups):
         return "", 201
 
-    return abort(403)
+    return abort(401)

@@ -39,7 +39,7 @@ services:
       traefik.http.routers.auth.rule: Host(`auth.localhost`)
       traefik.http.services.auth.loadbalancer.server.port: 5000
       traefik.http.routers.auth.entrypoints: web
-      traefik.http.middlewares.traefik-forward-auth.forwardauth.address: http://glauth-ui:5000/forward_auth/header/
+      traefik.http.middlewares.traefik-forward-auth.forwardauth.address: http://glauth-ui:5000/forward_auth/header/?group=glauth_admin&group=svcaccts
 
   glauth:
     image: glauth/glauth

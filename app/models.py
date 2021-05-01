@@ -66,9 +66,9 @@ class User(UserMixin, db.Model):
     def in_groups(self,*allowed_groups):
         """Check is the user is in a group
         """
-        #ToDo: Does this work recursivly with nested groups?
-        #if self.primarygroup.name in groups:
-        #    return True
+        primarygroup=Group.query.filter_by(unixid=self.primarygroup).first()
+        if primarygroup.name in allowed_groups:
+            return True
         for group in self.othergroups:
             if group.name in allowed_groups:
                 return True
