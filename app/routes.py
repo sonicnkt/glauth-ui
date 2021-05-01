@@ -146,6 +146,7 @@ def new_account(token):
     return render_template('new_account.html', title='Activate Account', form=form, fullname=fullname)
 
 import base64
+from ipaddress import ip_network, ip_address
 
 @app.route('/forward_auth/header/', methods=['GET', 'POST'], subdomain="<subdomain>")
 def forward_auth(subdomain):
@@ -157,10 +158,16 @@ def forward_auth(subdomain):
     origin = protocol+"://"+host+uri
     method = request.headers.get('X-Forwarded-Method')
 
-    #Whitelist based on IP address
+    #whitelist based on IP address
     sourceIp=request.headers.get('X-Forwarded-For',None)
     if sourceIp in request.args.getlist('ip'):
         return "", 201
+
+    #Whitelist based on CIDR netmask
+    for net in request.args.getlist('network'):
+        net = ip_network(net)
+        if sourceIp and ip_address(sourceIp) in net:
+            return "", 201
 
     if current_user.is_anonymous:
         return Response(
