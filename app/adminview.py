@@ -108,7 +108,9 @@ class UserView(MyModelView):
     
     # Add custom Fields
     form_extra_fields = {
-        'password': PasswordField('Password'),
+        'password': PasswordField('Password', 
+                                  render_kw={"autocomplete": "new-password"},
+                                  description='TEMP'),
         'send_pw_reset_link': BooleanField('Send Password Reset Link'),
         # Make this a button in the list view?
         'send_invite_link': BooleanField('Send Invite Link')
@@ -123,7 +125,7 @@ class UserView(MyModelView):
     )
 
     # Configure which form fields to show
-    form_columns = ('send_pw_reset_link', 'send_invite_link', 'username', 'givenname', 'surname', 'mail', 'password', 'unixid', 'is_active', 'pgroup', 'othergroups')
+    form_columns = ('send_pw_reset_link', 'send_invite_link', 'username', 'password', 'givenname', 'surname', 'mail', 'unixid', 'is_active', 'pgroup', 'othergroups')
 
     # Configure which columns are shown in detail view
     column_details_exclude_list = ['password_hash']
@@ -142,6 +144,9 @@ class UserView(MyModelView):
         form.pgroup.query = Group.query.filter_by(primary=True).all()
         form.othergroups.query = Group.query.filter_by(primary=False).all()
 
+        # Add Password field description
+        form.password.description = 'Leave empty if you want to autogenerate a password.'
+
         default_unixid=5001
         highest_user=User.query.order_by(User.unixid.desc()).limit(1).all()
         if highest_user:
@@ -157,6 +162,9 @@ class UserView(MyModelView):
         # Change form attribute?
         #setattr(form, 'TEST', BooleanField('DummyTest') )
         
+        # Add Password field description
+        form.password.description = 'Leave empty to keep the current password.'
+
         # Modify query result for query form
         # Primarygroup.query.filter(Primarygroup.name.like('%test%')).all()
         form.pgroup.query = Group.query.filter_by(primary=True).all()
@@ -171,6 +179,8 @@ class UserView(MyModelView):
 
         # If new users was created without password
         if is_created:
+            if form.send_invite_link.data and ((not form.mail.data) or form.mail.data == '' ):
+                raise ValidationError('A valid Email Address is required for sending invite links.')
             if not form.password.data or form.password.data == '':
                 # Generate random password
                 password = ''.join(choices(ascii_uppercase + ascii_lowercase + digits, k=8))
@@ -195,6 +205,8 @@ class UserView(MyModelView):
                     model.set_password(form.password.data)
             # If Reset PW Optione is enabled
             if hasattr(form, 'send_pw_reset_link'):
+                if form.send_pw_reset_link.data and ((not form.mail.data) or form.mail.data == '' ):
+                    raise ValidationError('A valid Email Address is required for sending password reset links.')
                 if form.send_pw_reset_link.data:
                     # Disable Account
                     model.is_active = False
@@ -335,7 +347,7 @@ class GlauthConfig(MyBaseView):
             settings.basedn = form.basedn.data
             db.session.commit()
             create_glauth_config()
-            flash('Glauth settings have been changed, please restart glauth.')
+            flash('Glauth settings have been changed, please restart glauth server.')
             
         if request.method == 'GET':
             # Populate form with stored config

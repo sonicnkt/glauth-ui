@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
+from secrets import token_urlsafe
 import hashlib
 import os
 import click
@@ -15,7 +16,7 @@ import click
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, render_as_batch=True)
 login = LoginManager(app)
 login.login_view = 'login'
 mail = Mail(app)
@@ -47,7 +48,13 @@ if not app.debug:
     app.logger.addHandler(file_handler)
 
     app.logger.setLevel(logging.INFO)
-    app.logger.info('GLauth Management UI')
+    app.logger.info('Glauth UI')       
+
+    if app.config['SECRET_KEY'] == 'you-will-never-guess':
+        app.logger.warning('No unique SECRET_KEY set to secure the application.\n \
+                            You can the following randomly generated key:\n \
+                            {}'.format(token_urlsafe(50)))
+        exit()
 
 # Security - Generate GLAUTH compatible password hashs
 def generate_password_hash(password):
