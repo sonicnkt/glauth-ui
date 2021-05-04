@@ -5,6 +5,14 @@
         <h2>Edit Profile</h2>
     </div>
     <div class="mx-auto container" >
-        {{ render_form(form) }}
+        <form method="post">
+            {{ form.hidden_tag() }}
+            {{ render_field(form.givenname) }}
+            {{ render_field(form.surname) }}
+            {{ render_field(form.mail) }}
+            {{ render_field(form.submit) }}
+            {{ render_field(form.cancel, button_style="btn btn-danger") }}
+        </form>
+
     </div>
 {% endblock %}

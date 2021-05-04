@@ -28,7 +28,9 @@ class Settings(db.Model):
     ldaps_cert = db.Column(db.String(40))
     ldaps_key = db.Column(db.String(40))
     basedn = db.Column(db.String(40))
-    
+    nameformat = db.Column(db.String(4)) # Default "cn"
+    groupformat = db.Column(db.String(4)) # Default "ou"
+    sshkeyattr = db.Column(db.String(20)) # Default "ipaSshPubKey"
     def __repr__(self):
         return 'GLAUTH Config Object'
 

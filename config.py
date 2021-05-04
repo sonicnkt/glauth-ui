@@ -2,7 +2,6 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
-    SERVER_NAME = os.environ.get('BASE_URL')
     APPNAME = os.environ.get('APPNAME') or 'Glauth UI'
     ORGANISATION = os.environ.get('ORGANISATION') or 'Glauth UI - Team'
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
@@ -26,4 +25,4 @@ class Config(object):
         os.path.join(basedir, 'db', 'config.cfg')
     
     # FLASK ADMIN STUFF
-    FLASK_ADMIN_FLUID_LAYOUT = True
+    FLASK_ADMIN_FLUID_LAYOUT = False

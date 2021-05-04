@@ -335,6 +335,15 @@ class GlauthConfig(MyBaseView):
     def index(self):
         form = EditGlauthForm()
         settings = Settings.query.get(1)
+        
+        nameformat = "cn"
+        groupformat = "ou"
+        if settings.nameformat and (settings.nameformat != ""):
+            nameformat = settings.nameformat
+        if settings.groupformat and (settings.groupformat != ""):
+            groupformat = settings.groupformat            
+        dnformat = '{}=user,{}=group,{}'.format(nameformat, groupformat, settings.basedn)
+
         if form.validate_on_submit():
             # Store edited data in db and write to config
             settings.debug = form.debug.data
@@ -345,6 +354,10 @@ class GlauthConfig(MyBaseView):
             settings.ldaps_cert = form.ldaps_cert.data
             settings.ldaps_key = form.ldaps_key.data
             settings.basedn = form.basedn.data
+            settings.nameformat = form.nameformat.data
+            settings.groupformat = form.groupformat.data
+            settings.sshkeyattr = form.sshkeyattr.data
+
             db.session.commit()
             create_glauth_config()
             flash('Glauth settings have been changed, please restart glauth server.')
@@ -359,7 +372,10 @@ class GlauthConfig(MyBaseView):
             form.ldaps_cert.data = settings.ldaps_cert
             form.ldaps_key.data = settings.ldaps_key
             form.basedn.data = settings.basedn
-        return self.render('admin/glauth.html', form=form)
+            form.nameformat.data =  settings.nameformat
+            form.groupformat.data = settings.groupformat
+            form.sshkeyattr.data =  settings.sshkeyattr
+        return self.render('admin/glauth.html', form=form, dnformat=dnformat)
 
 class AdminHomeView(MyAdminIndexView):
     #@login_required
