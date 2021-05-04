@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request, abort, Response
 from app import app, db
-from app.forms import LoginForm, EditProfileForm, ChangePasswordForm 
+from app.forms import LoginForm, EditProfileForm, ChangePasswordForm
 from app.forms import ResetPasswordRequestForm, ResetPasswordForm, NewAccountForm
 from app.forms import TestMailForm
 from flask_login import current_user, login_user, logout_user, login_required
@@ -52,7 +52,7 @@ def login():
         login_user(user, remember=form.remember_me.data)
 
         next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':    
+        if not next_page or url_parse(next_page).netloc != '':
             return redirect(url_for('index'))
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
@@ -148,8 +148,8 @@ def new_account(token):
 import base64
 from ipaddress import ip_network, ip_address
 
-@app.route('/forward_auth/header/', methods=['GET', 'POST'], subdomain="<subdomain>")
-def forward_auth(subdomain):
+@app.route('/forward_auth/header/', methods=['GET', 'POST'])
+def forward_auth():
     """The actual login is handled by flask_login
     """
     protocol = request.headers.get('X-Forwarded-Proto')
@@ -175,42 +175,6 @@ def forward_auth(subdomain):
             'You have to login with proper credentials\n', 401,
             {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
-    allowed_groups = request.args.getlist('group')
-    if current_user.in_groups(*allowed_groups):
-        return "", 201
-
-    return abort(403)
-
-#@app.route('/forward_auth/cookie/', methods=['GET', 'POST'], subdomain="<subdomain>")
-def forward_auth(subdomain):
-    """Unfortunatly implementing the CORS cookies in a clean way behind traefik is a bit beyond
-    me. There are things traefik could do to make this easier, like allow me to do a post
-    request to the auth server from behind the proxy, but alas.
-    """
-    raise NotImplementedError
-    protocol = request.headers.get('X-Forwarded-Proto')
-    host = request.headers.get('X-Forwarded-Host')
-    uri = request.headers.get('X-Forwarded-Uri')
-    origin = protocol+"://"+host+uri
-    method = request.headers.get('X-Forwarded-Method')
-
-    #Whitelist based on IP address, wish there was some way to whitelist based on
-    # docker service name. Maybe traefik will do something about it.
-    #ToDo: If somone wants maybe add IP range whitelisting? I just did this because it
-    # was very easy to do, and someone might find it useful.
-    sourceIp=request.headers.get('X-Forwarded-For',None)
-    if sourceIp in request.args.getlist('ip'):
-        return "", 201
-
-    if current_user.is_anonymous:
-        return render_template('forward_auth.html'), 401
-        loginpage = login(internal_redirect=origin)
-        if type(loginpage)==str:
-            return loginpage, 401
-        return loginpage
-
-    #Simple no DB based group lookup, configurable via client env variable
-    #Makes sure the user is in one of the groups passed as a `group` querystring arg.
     allowed_groups = request.args.getlist('group')
     if current_user.in_groups(*allowed_groups):
         return "", 201

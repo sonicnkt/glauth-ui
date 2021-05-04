@@ -33,7 +33,6 @@ services:
       - 'glauth:/home/ldap/db'
     environment:
       SECRET_KEY: mysuperlongsecretkeythatnobodywillguess
-      BASE_URL: auth.localhost
 
     labels:
       traefik.enable: true

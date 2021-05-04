@@ -77,26 +77,4 @@ def createdbdata():
     else:
         app.logger.info('Data in DB allready exists.')
 
-@app.after_request
-def cors_headers(response):
-    """Automatically add CORS headers to every request. This
-    should be tightened up.
-    """
-    response.headers["access-control-allow-origin"] = request.headers.get('origin')
-    response.headers.add('Access-Control-Allow-Headers', "hx-current-url,hx-request")
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
-    return response
-
-import flask
-class DomainSessionInterface(flask.sessions.SecureCookieSessionInterface):
-    def get_cookie_domain(self, app):
-        origin=request.headers.get('Origin',Config.SERVER_NAME).split("://")[-1]
-        if origin=="localhost":
-            origin=""
-        return origin
-
-    def get_cookie_httponly(self, app):
-        return False
-
-app.session_interface = DomainSessionInterface()
 
