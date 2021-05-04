@@ -37,8 +37,6 @@ def login():
     
     form = LoginForm() 
     if form.validate_on_submit():
-        #flash('Login requested for user {} with pw {}, remember_me={}'.format(
-        #    form.username.data, form.password.data, form.remember_me.data))
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
@@ -65,6 +63,8 @@ def logout():
 @login_required
 def edit_profile():
     form = EditProfileForm(current_user.mail)
+    if form.cancel.data:
+        return redirect(url_for('index'))
     if form.validate_on_submit():
         current_user.givenname = form.givenname.data
         current_user.surname = form.surname.data
@@ -85,12 +85,18 @@ def edit_profile():
 @login_required
 def change_password():
     form = ChangePasswordForm(current_user.password_hash)
+    if form.cancel.data:
+        return redirect(url_for('index'))
     if form.validate_on_submit():
         current_user.set_password(form.newpassword1.data)
         db.session.commit()
         create_glauth_config()
         flash('Your password has been changed.')
         return redirect(url_for('index'))
+    elif request.method == 'GET':
+        form.oldpassword.data = ""
+        form.newpassword1.data = current_user.surname
+        form.newpassword2.data = current_user.mail
     return render_template('change_password.html', title='Change Password', form=form)
 
 @app.route('/reset_password_request', methods=['GET', 'POST'])
