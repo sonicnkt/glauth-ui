@@ -18,7 +18,6 @@ Current features:
 Missing features:
  - Not all glauth settings and user options can be configured, following featurs and Options are missing:
     - API
-    - Backend: nameformat, groupformat, sshkeyattr
     - User: loginShell, homeDir, sshkeys, passappsha256, otpsecret, yubikey 
 
 ----
