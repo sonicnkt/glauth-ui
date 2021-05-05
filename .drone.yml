@@ -1,0 +1,13 @@
+kind: pipeline
+name: default
+
+steps:
+- name: docker  
+  image: plugins/docker
+  settings:
+    repo: traverseda/glauth-ui
+    auto_tag: true
+    username:
+      from_secret: dockerhub_user
+    password:
+      from_secret: dockerhub_pass

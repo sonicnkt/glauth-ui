@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 # https://bootstrap-flask.readthedocs.io
@@ -21,7 +21,6 @@ login = LoginManager(app)
 login.login_view = 'login'
 mail = Mail(app)
 bootstrap = Bootstrap(app)
-
 
 if not app.debug:
     if app.config['MAIL_SERVER']:
@@ -72,8 +71,10 @@ from app import routes, models, glauth, adminview, errors
 def createdbdata():
     """Creating example db"""
     if models.User.query.count() == 0:
-        app.logger.info('No Data in DB, creating example dataset') 
+        app.logger.info('No Data in DB, creating example dataset')
         click.echo('Creating Example DB')
         models.create_basic_db()
     else:
-        app.logger.info('Data in DB allready exists.') 
+        app.logger.info('Data in DB allready exists.')
+
+

@@ -1,6 +1,6 @@
-from flask import render_template, flash, redirect, url_for, request, abort
+from flask import render_template, flash, redirect, url_for, request, abort, Response
 from app import app, db
-from app.forms import LoginForm, EditProfileForm, ChangePasswordForm 
+from app.forms import LoginForm, EditProfileForm, ChangePasswordForm
 from app.forms import ResetPasswordRequestForm, ResetPasswordForm, NewAccountForm
 from app.forms import TestMailForm
 from flask_login import current_user, login_user, logout_user, login_required
@@ -34,8 +34,8 @@ def testmail():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
-    
-    form = LoginForm() 
+
+    form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
@@ -48,8 +48,9 @@ def login():
             flash('Account not eligable to login.')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
+
         next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':    
+        if not next_page or url_parse(next_page).netloc != '':
             return redirect(url_for('index'))
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
@@ -149,3 +150,39 @@ def new_account(token):
         return redirect(url_for('login'))
     fullname = '{}'.format(user.givenname + ' ' + user.surname)
     return render_template('new_account.html', title='Activate Account', form=form, fullname=fullname)
+
+import base64
+from ipaddress import ip_network, ip_address
+
+@app.route('/forward_auth/header/', methods=['GET', 'POST'])
+def forward_auth():
+    """The actual login is handled by flask_login
+    """
+    protocol = request.headers.get('X-Forwarded-Proto')
+    host = request.headers.get('X-Forwarded-Host')
+    uri = request.headers.get('X-Forwarded-Uri')
+    origin = protocol+"://"+host+uri
+    method = request.headers.get('X-Forwarded-Method')
+
+    #whitelist based on IP address
+    sourceIp=request.headers.get('X-Forwarded-For',None)
+    if sourceIp in request.args.getlist('ip'):
+        return "", 201
+
+    #Whitelist based on CIDR netmask
+    for net in request.args.getlist('network'):
+        net = ip_network(net)
+        if sourceIp and ip_address(sourceIp) in net:
+            return "", 201
+
+    if current_user.is_anonymous:
+        return Response(
+            f'Could not verify your access level for that {origin}.\n'
+            'You have to login with proper credentials\n', 401,
+            {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+    allowed_groups = request.args.getlist('group')
+    if current_user.in_groups(*allowed_groups):
+        return "", 201
+
+    return abort(403)

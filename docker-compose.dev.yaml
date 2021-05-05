@@ -21,9 +21,9 @@ services:
   glauth:
     image: glauth/glauth
     container_name: glauth-dev
-    command: glauth -c /config/
+    command: /app/glauth -c /config/config.cfg
     volumes:
-      - 'glauth:/config/config.cfg'
+      - 'glauth:/config/'
 
 volumes:
   glauth:

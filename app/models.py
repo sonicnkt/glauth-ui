@@ -65,6 +65,17 @@ class User(UserMixin, db.Model):
     othergroups = db.relationship('Group', secondary=othergroups_users,
                             backref=db.backref('o_users', lazy='dynamic'))
 
+    def in_groups(self,*allowed_groups):
+        """Check is the user is in a group
+        """
+        primarygroup=Group.query.filter_by(unixid=self.primarygroup).first()
+        if primarygroup.name in allowed_groups:
+            return True
+        for group in self.othergroups:
+            if group.name in allowed_groups:
+                return True
+        return False
+
     @property
     def is_admin(self):
         # checks if the name of any group matches the configured ADMIN_GROUP name
@@ -117,6 +128,19 @@ class User(UserMixin, db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
+import base64
+
+@login.request_loader
+def http_basic_auth(request):
+    authstr = request.headers.get("Authorization")
+    if authstr:
+        authstr=authstr.removeprefix("Basic ").lstrip().rstrip()
+        authbytes = authstr.encode('utf-8') #We need to ensure it's bytes
+        username, password = base64.b64decode(authbytes).decode("utf-8").split(":")
+        user = User.query.filter_by(username=username).first()
+        if user.check_password(password):
+            return user
+    return None
 
 def create_basic_db():
     settings = Settings(debug=True, ldap_enabled=True, ldap_listen='0.0.0.0:389', basedn='dc=glauth-example,dc=com')
