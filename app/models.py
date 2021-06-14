@@ -93,7 +93,18 @@ class User(UserMixin, db.Model):
         return jwt.encode(
             {'username': self.username, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256')
-    
+
+    def in_groups(self,*allowed_groups):
+        """Check if the user is in a group
+        """
+        primarygroup=Group.query.filter_by(unixid=self.primarygroup).first()
+        if primarygroup.name in allowed_groups:
+            return True
+        for group in self.othergroups:
+            if group.name in allowed_groups:
+                return True
+        return False
+
     @staticmethod
     def verify_reset_password_token(token):
         try:

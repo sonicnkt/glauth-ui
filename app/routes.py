@@ -8,6 +8,7 @@ from app.models import User, Group
 from app.email import send_password_reset_email, send_test_mail
 from werkzeug.urls import url_parse
 from app.glauth import create_glauth_config
+from ipaddress import ip_network, ip_address
 
 @app.route('/')
 @app.route('/index')
@@ -157,3 +158,41 @@ def new_account(token):
         return redirect(url_for('login'))
     fullname = '{}'.format(user.givenname + ' ' + user.surname)
     return render_template('new_account.html', title='Activate Account', form=form, fullname=fullname)
+
+@app.route('/forward_auth/header/', methods=['GET', 'POST'])
+def forward_auth():
+    """The actual login is handled by flask_login
+    """
+    protocol = request.headers.get('X-Forwarded-Proto')
+    host = request.headers.get('X-Forwarded-Host')
+    uri = request.headers.get('X-Forwarded-Uri')
+    origin = protocol+"://"+host+uri
+
+    #Whitelist based on IP address
+    sourceIp=request.headers.get('X-Forwarded-For',None)     
+    if sourceIp in request.args.getlist('ip'):
+        return "", 201
+
+    #Whitelist based on CIDR netmask
+    for net in request.args.getlist('network'):
+        net = ip_network(net)
+        if sourceIp and ip_address(sourceIp) in net:
+            return "", 201
+
+    if current_user.is_anonymous:
+        return "", 401
+            
+    allowed_groups = request.args.getlist('group')
+    if current_user.is_authenticated:
+        if allowed_groups:
+            if current_user.in_groups(*allowed_groups):
+                return "", 201
+        else:    
+            return "", 201
+    
+    return "", 403
+
+@app.route('/forward_auth/forbidden')
+def not_allowed():
+    origin = request.args.get('from')
+    return render_template('forbidden.html', origin=origin), 403
