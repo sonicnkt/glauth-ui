@@ -35,11 +35,19 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     
+    if 'X-Forwarded-For' in request.headers:
+        remote_addr = request.headers.get('X-Forwarded-For',None)
+    else:
+        remote_addr = request.remote_addr or 'untrackable'
+
     form = LoginForm() 
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
+            app.logger.warning('Failed login attempt with user {} from {}'.format(
+                form.username.data, 
+                str(remote_addr)))
             return redirect(url_for('login'))
         elif user is not None and (user.is_active == False):
             flash('Account has been disabled, contact Administrator.')
