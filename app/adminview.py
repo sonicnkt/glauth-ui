@@ -342,7 +342,7 @@ class GlauthConfig(MyBaseView):
             nameformat = settings.nameformat
         if settings.groupformat and (settings.groupformat != ""):
             groupformat = settings.groupformat            
-        dnformat = '{}=user,{}=group,{}'.format(nameformat, groupformat, settings.basedn)
+        dnformat = '{}=<username>,{}=<primarygroup>,{}'.format(nameformat, groupformat, settings.basedn)
 
         if form.validate_on_submit():
             # Store edited data in db and write to config
