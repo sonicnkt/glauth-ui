@@ -68,6 +68,9 @@ def check_password_hash(hash, password):
 
 from app import routes, models, glauth, adminview, errors
 
+from .oauth import blueprint as oauth_blueprint
+app.register_blueprint(oauth_blueprint, url_prefix="/oauth")
+
 @app.cli.command()
 def createdbdata():
     """Creating example db"""
