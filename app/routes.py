@@ -53,7 +53,7 @@ def login():
         elif user is not None and (user.is_active == False):
             flash('Account has been disabled, contact Administrator.')
             return redirect(url_for('login'))
-        elif user is not None and (user.mail == None or ''):
+        elif user is not None and (user.mail is None or user.mail==''):
             flash('Account not eligable to login.')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
@@ -79,8 +79,11 @@ def edit_profile():
         current_user.surname = form.surname.data
         current_user.mail = form.mail.data
         db.session.commit()
-        create_glauth_config()
-        flash('Your changes have been saved.')
+        try:
+            create_glauth_config()
+            flash('Your changes have been saved.')
+        except Exception as exc:
+            flash('Your changes were not saved: ' + str(exc))
         return redirect(url_for('index'))
     elif request.method == 'GET':
         form.givenname.data = current_user.givenname
@@ -99,8 +102,11 @@ def change_password():
     if form.validate_on_submit():
         current_user.set_password(form.newpassword1.data)
         db.session.commit()
-        create_glauth_config()
-        flash('Your password has been changed.')
+        try:
+            create_glauth_config()
+            flash('Your password has been changed.')
+        except Exception as exc:
+            flash('Your password was not changed: ' + str(exc))
         return redirect(url_for('index'))
     elif request.method == 'GET':
         form.oldpassword.data = ""
@@ -128,15 +134,18 @@ def reset_password(token):
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     user = User.verify_reset_password_token(token)
-    if not user:
+    if user is None:
         return redirect(url_for('index'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
         user.is_active = True
         db.session.commit()
-        create_glauth_config()
-        flash('Your password has been reset, please login.')
+        try:
+            create_glauth_config()
+            flash('Your password has been reset, please login.')
+        except Exception as exc:
+            flash('Your password was not reset: ' + str(exc))
         return redirect(url_for('login'))
     fullname = '{}'.format(user.givenname + ' ' + user.surname)
     return render_template('reset_password.html', form=form, fullname=fullname)
@@ -146,15 +155,18 @@ def new_account(token):
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     user = User.verify_new_account_token(token)
-    if not user:
+    if user is None:
         return redirect(url_for('index'))
     form = NewAccountForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
         user.is_active = True
         db.session.commit()
-        create_glauth_config()
-        flash('Your password has been set, please login.')
+        try:
+            create_glauth_config()
+            flash('Your password has been set, please login.')
+        except Exception as exc:
+            flash('Your password was not set: ' + str(exc))
         return redirect(url_for('login'))
     fullname = '{}'.format(user.givenname + ' ' + user.surname)
     return render_template('new_account.html', title='Activate Account', form=form, fullname=fullname)
@@ -166,7 +178,6 @@ def forward_auth():
     protocol = request.headers.get('X-Forwarded-Proto')
     host = request.headers.get('X-Forwarded-Host')
     uri = request.headers.get('X-Forwarded-Uri')
-    origin = protocol+"://"+host+uri
 
     #Whitelist based on IP address
     sourceIp=request.headers.get('X-Forwarded-For',None)     

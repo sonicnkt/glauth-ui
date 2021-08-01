@@ -3,8 +3,8 @@ from app.models import User, Group, Settings
 from app.forms import EditGlauthForm
 from flask_admin import Admin, AdminIndexView, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
-from flask_login import current_user, login_user, logout_user, login_required
-from flask import render_template, flash, redirect, url_for, request, abort
+from flask_login import current_user, login_user, logout_user
+from flask import flash, redirect, url_for, request, abort
 from app.email import send_password_reset_email, send_account_invite
 
 # Custom Forms and Fields for FlaskAdmin
@@ -71,13 +71,13 @@ class MyModelView(ModelView):
 
 class UserView(MyModelView):
     # Custom Validator Functions
-    def valid_chars(form, field):
+    def valid_chars(self, field):
         result = re.compile(r'[^a-z0-9_-]').search(field.data)
         if result:
             raise ValidationError('"{}" is not allowed'.format(result.group(0)))
     
     # Maybe a configureable list of forbidden usernames stored in config?
-    def no_root_allowed(form, field):
+    def no_root_allowed(self, field):
         if field.data == 'root':
             raise ValidationError('"root" is not allowed')
 
@@ -136,7 +136,7 @@ class UserView(MyModelView):
     # Customize EDIT/Create Form , obj = model object, needs to return a valid form Object in the End
     # Use this to customize which fields are available on new or edited users
     def create_form(self, obj=None):
-        form = super().create_form(obj)
+        form = super(UserView).create_form(obj)
         # Delete a form attribute
         delattr(form, 'send_pw_reset_link')
         # Modify query result for query form
@@ -155,7 +155,7 @@ class UserView(MyModelView):
         return form
     
     def edit_form(self, obj):
-        form = super(MyModelView, self).create_form(obj)
+        form = super(UserView, self).create_form(obj)
         #form.send_pw_reset_link.label = TEST
         # Delete a form attribute
         delattr(form, 'send_invite_link')
@@ -214,18 +214,22 @@ class UserView(MyModelView):
                     flash('Reset Password Link was send to  {}'.format(model.mail))
         
         # Write new glauth config File
-        create_glauth_config()
-        pass
+        try:
+            create_glauth_config()
+        except Exception:
+            pass
     
     # What to do if entry is deleted
     def after_model_delete(self, model):
         # Write new glauth config File
-        create_glauth_config()
-        pass       
+        try:
+            create_glauth_config()
+        except Exception:
+            pass
 
 class GroupView(MyModelView):
     # Custom Validator Functions
-    def valid_chars(form, field):
+    def valid_chars(self, field):
         result = re.compile(r'[^a-z0-9_-]').search(field.data)
         if result:
             raise ValidationError('"{}" is not allowed'.format(result.group(0)))
@@ -277,7 +281,7 @@ class GroupView(MyModelView):
     # Customize EDIT/Create Form , obj = model object, needs to return a valid form Object in the End
     # Use this to customize which fields are available on new or edited users
     def create_form(self, obj=None):
-        form = super(MyModelView, self).create_form(obj)
+        form = super(GroupView, self).create_form(obj)
         # Delete a form attribute
         delattr(form, 'includes')
         delattr(form, 'included_in')
@@ -291,7 +295,7 @@ class GroupView(MyModelView):
         return form
     
     def edit_form(self, obj):
-        form = super(MyModelView, self).create_form(obj)
+        form = super(GroupView, self).create_form(obj)
         if obj.primary == True:
             # If primary group delete othergroups users 
             delattr(form, 'o_users')
@@ -312,25 +316,27 @@ class GroupView(MyModelView):
         # form = Form object (form.<columnname>.data)
 
         # Write new glauth config File
-        create_glauth_config()
-        pass
+        try:
+            create_glauth_config()
+        except Exception:
+            pass
     
     # What to do if entry is deleted
     def after_model_delete(self, model):
         # Write new glauth config File
-        create_glauth_config()
-        pass       
+        try:
+            create_glauth_config()
+        except Exception:
+            pass
 
 ## Customize Base and AdminIndex View with custom is accessible rules (current_user.is_admin)?
 
 class LeaveAdmin(MyBaseView):
-    #@login_required
     @expose('/')
     def index(self):
         return redirect(url_for('index'))
 
 class GlauthConfig(MyBaseView):
-    #@login_required
     @expose('/', methods=['GET', 'POST'])
     def index(self):
         form = EditGlauthForm()
@@ -359,8 +365,11 @@ class GlauthConfig(MyBaseView):
             settings.sshkeyattr = form.sshkeyattr.data
 
             db.session.commit()
-            create_glauth_config()
-            flash('Glauth settings have been changed, please restart glauth server.')
+            try:
+                create_glauth_config()
+                flash('Glauth settings have been changed, please restart glauth server.')
+            except Exception as exc:
+                flash('Glauth settings NOT updated, an error occured: ' + str(exc))
             
         if request.method == 'GET':
             # Populate form with stored config
@@ -378,7 +387,6 @@ class GlauthConfig(MyBaseView):
         return self.render('admin/glauth.html', form=form, dnformat=dnformat)
 
 class AdminHomeView(MyAdminIndexView):
-    #@login_required
     @expose('/')
     def index(self):
         counts = {'users': '{}'.format(User.query.count()),

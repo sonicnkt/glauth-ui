@@ -1,5 +1,5 @@
 # Generate glauth config
-from app import app, db
+from app import app
 from app.models import User, Group, Settings
 from time import strftime, localtime
 
@@ -65,13 +65,8 @@ def create_glauth_config():
             new_config += "  # {}\n".format(group.description)
         new_config += "\n"
 
-    try:
-        f = open(app.config['GLAUTH_CFG_PATH'], "w")
-    except:
-        return False    
-    else:
-        f.write(new_config)
-        f.close()
-    return True
+    f = open(app.config['GLAUTH_CFG_PATH'], "w")
+    f.write(new_config)
+    f.close()
 
 
