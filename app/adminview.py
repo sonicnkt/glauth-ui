@@ -91,9 +91,9 @@ class UserView(MyModelView):
                          othergroups='Other Groups', 
                          is_active='Active',
                          mail='Email Address',
-                         unixid='UnixID')
+                         uidnumber='UIDNumber')
     # Configure columns in list view (order and which to show)
-    column_list = ('username', 'givenname', 'surname', 'mail', 'unixid', 'is_active', 'pgroup') #, 'othergroups')
+    column_list = ('username', 'givenname', 'surname', 'mail', 'uidnumber', 'is_active', 'pgroup') #, 'othergroups')
     # Configure columns that are editable in list view
     column_editable_list = ['username', 'mail', 'givenname', 'surname', 'is_active']
     # Configure columns that a searchable
@@ -101,7 +101,7 @@ class UserView(MyModelView):
     # Configure columns to exclude in list view
     column_exclude_list = ['password_hash']
     # Details View List
-    column_details_list = ('username', 'givenname', 'surname', 'mail', 'unixid', 'is_active', 'pgroup')
+    column_details_list = ('username', 'givenname', 'surname', 'mail', 'uidnumber', 'is_active', 'pgroup')
 
     # Configure colums to exclude in edit/create view
     form_excluded_columns = column_exclude_list
@@ -125,7 +125,7 @@ class UserView(MyModelView):
     )
 
     # Configure which form fields to show
-    form_columns = ('send_pw_reset_link', 'send_invite_link', 'username', 'password', 'givenname', 'surname', 'mail', 'unixid', 'is_active', 'pgroup', 'othergroups')
+    form_columns = ('send_pw_reset_link', 'send_invite_link', 'username', 'password', 'givenname', 'surname', 'mail', 'uidnumber', 'is_active', 'pgroup', 'othergroups')
 
     # Configure which columns are shown in detail view
     column_details_exclude_list = ['password_hash']
@@ -147,11 +147,11 @@ class UserView(MyModelView):
         # Add Password field description
         form.password.description = 'Leave empty if you want to autogenerate a password.'
 
-        default_unixid=5001
-        highest_user=User.query.order_by(User.unixid.desc()).limit(1).all()
+        default_uidnumber=5001
+        highest_user=User.query.order_by(User.uidnumber.desc()).limit(1).all()
         if highest_user:
-            default_unixid=highest_user[0].unixid+1
-        form.unixid.data=default_unixid
+            default_uidnumber=highest_user[0].uidnumber+1
+        form.uidnumber.data=default_uidnumber
         return form
     
     def edit_form(self, obj):
@@ -236,19 +236,19 @@ class GroupView(MyModelView):
                          name='Name',
                          description='Description',
                          primary='Primary Group', 
-                         unixid='UnixID',
+                         gidnumber='GIDNumber',
                          included_in='Included in Group(s)',
                          includes='Includes Group(s)')
     # Configure columns in list view (order and which to show)
-    column_list = ('name', 'unixid', 'primary', 'description')
+    column_list = ('name', 'gidnumber', 'primary', 'description')
     # Configure columns that are editable in list view
     column_editable_list = []
     # Configure columns that a searchable
-    column_searchable_list = ['name', 'unixid', 'primary', 'description']
+    column_searchable_list = ['name', 'gidnumber', 'primary', 'description']
     # Configure columns to exclude in list view
     #column_exclude_list = ['password_hash']
     
-    column_details_list = ('name', 'unixid', 'primary', 'description', 'includes')
+    column_details_list = ('name', 'gidnumber', 'primary', 'description', 'includes')
 
     # Sort by primary then name
     column_default_sort = [('primary', True), ('name', False)]
@@ -264,7 +264,7 @@ class GroupView(MyModelView):
     )
 
     # Configure which form fields to show
-    form_columns = ('name', 'unixid', 'primary', 'description', 'includes', 'included_in', 'p_users', 'o_users')
+    form_columns = ('name', 'gidnumber', 'primary', 'description', 'includes', 'included_in', 'p_users', 'o_users')
 
     # Configure which columns are shown in detail view
     column_details_exclude_list = ['password_hash']
@@ -283,11 +283,11 @@ class GroupView(MyModelView):
         delattr(form, 'included_in')
         delattr(form, 'p_users')
         delattr(form, 'o_users')
-        default_unixid=5500
-        highest_group=Group.query.order_by(Group.unixid.desc()).limit(1).all()
+        default_gidnumber=5500
+        highest_group=Group.query.order_by(Group.gidnumber.desc()).limit(1).all()
         if highest_group:
-            default_unixid=highest_group[0].unixid+1
-        form.unixid.data=default_unixid
+            default_gidnumber=highest_group[0].gidnumber+1
+        form.gidnumber.data=default_gidnumber
         return form
     
     def edit_form(self, obj):
