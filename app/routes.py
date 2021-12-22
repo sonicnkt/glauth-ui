@@ -14,7 +14,7 @@ from ipaddress import ip_network, ip_address
 @app.route('/index')
 @login_required
 def index():
-    pgroup_name = Group.query.filter_by(unixid=current_user.primarygroup).first().name
+    pgroup_name = Group.query.filter_by(gidnumber=current_user.primarygroup).first().name
     #return render_template('index.html', title='Home', user=user)
     return render_template("index.html", title='Profile', primarygroup=pgroup_name)
 

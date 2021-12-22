@@ -6,14 +6,14 @@ import jwt
 
 othergroups_users = db.Table(
     'othergroups_users',
-    db.Column('user_id', db.Integer(), db.ForeignKey('user.unixid')),
-    db.Column('group_id', db.Integer(), db.ForeignKey('group.unixid'))
+    db.Column('user_id', db.Integer(), db.ForeignKey('user.uidnumber')),
+    db.Column('group_id', db.Integer(), db.ForeignKey('group.gidnumber'))
 )
 
 included_groups = db.Table(
     'included_groups',
-    db.Column('include_id', db.Integer(), db.ForeignKey('group.unixid')),
-    db.Column('included_in_id', db.Integer(), db.ForeignKey('group.unixid'))
+    db.Column('include_id', db.Integer(), db.ForeignKey('group.gidnumber')),
+    db.Column('included_in_id', db.Integer(), db.ForeignKey('group.gidnumber'))
 )
 
 
@@ -38,13 +38,13 @@ class Settings(db.Model):
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), index=True, unique=True, nullable=False)
-    unixid = db.Column(db.Integer, unique=True, nullable=False)
+    gidnumber = db.Column(db.Integer, unique=True, nullable=False)
     primary = db.Column(db.Boolean, default=False, nullable=False)
     description = db.Column(db.String(255))
     p_users = db.relationship('User', backref='pgroup', lazy='dynamic')
     included_in = db.relationship('Group', secondary=included_groups,
-                            primaryjoin=(included_groups.c.include_id == unixid),
-                            secondaryjoin=(included_groups.c.included_in_id == unixid),
+                            primaryjoin=(included_groups.c.include_id == gidnumber),
+                            secondaryjoin=(included_groups.c.included_in_id == gidnumber),
                             backref=db.backref('includes', lazy='dynamic'), lazy='dynamic')
     def __repr__(self):
         return '{}'.format(self.name)
@@ -57,11 +57,11 @@ class User(UserMixin, db.Model):
     mail = db.Column(db.String(50), index=True, unique=True)
     givenname = db.Column(db.String(40)) #, index=True)
     surname = db.Column(db.String(40)) #, index=True)
-    unixid = db.Column(db.Integer, unique=True, nullable=False)
+    uidnumber = db.Column(db.Integer, unique=True, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     password_hash = db.Column(db.String(64), nullable=False)
     # add activation date?
-    primarygroup = db.Column(db.Integer, db.ForeignKey('group.unixid'), nullable=False)
+    primarygroup = db.Column(db.Integer, db.ForeignKey('group.gidnumber'), nullable=False)
     othergroups = db.relationship('Group', secondary=othergroups_users,
                             backref=db.backref('o_users', lazy='dynamic'))
 
@@ -97,7 +97,7 @@ class User(UserMixin, db.Model):
     def in_groups(self,*allowed_groups):
         """Check if the user is in a group
         """
-        primarygroup=Group.query.filter_by(unixid=self.primarygroup).first()
+        primarygroup=Group.query.filter_by(gidnumber=self.primarygroup).first()
         if primarygroup.name in allowed_groups:
             return True
         for group in self.othergroups:
@@ -134,21 +134,21 @@ def create_basic_db():
     
     db.session.add(settings)
 
-    og1 = Group(name='glauth_admin', unixid=5551, description='Glauth UI admin group')
-    og2 = Group(name='vpn', unixid=5552)
+    og1 = Group(name='glauth_admin', gidnumber=5551, description='Glauth UI admin group')
+    og2 = Group(name='vpn', gidnumber=5552)
 
     db.session.add(og1)
     db.session.add(og2)
 
-    pg1 = Group(name='people', unixid=5501, primary=True, description='primary user group', includes=[ og2 ])
-    pg2 = Group(name='svcaccts', unixid=5502, primary=True, description='service accounts')
+    pg1 = Group(name='people', gidnumber=5501, primary=True, description='primary user group', includes=[ og2 ])
+    pg2 = Group(name='svcaccts', gidnumber=5502, primary=True, description='service accounts')
    
     db.session.add(pg1)
     db.session.add(pg2)
 
-    u1 = User(username='j_doe', givenname='Jane', surname='Doe', unixid=5001, password_hash='6478579e37aff45f013e14eeb30b3cc56c72ccdc310123bcdf53e0333e3f416a', mail='jane.doe@glauth-example.com', pgroup=pg1, othergroups=[og1])
+    u1 = User(username='j_doe', givenname='Jane', surname='Doe', uidnumber=5001, password_hash='6478579e37aff45f013e14eeb30b3cc56c72ccdc310123bcdf53e0333e3f416a', mail='jane.doe@glauth-example.com', pgroup=pg1, othergroups=[og1])
     # PW: dogood
-    u2 = User(username='search', unixid=5002, password_hash='125844054e30fabcd4182ae69c9d7b38b58d63c067be10ab5ab883d658383316', pgroup=pg2)
+    u2 = User(username='search', uidnumber=5002, password_hash='125844054e30fabcd4182ae69c9d7b38b58d63c067be10ab5ab883d658383316', pgroup=pg2)
     # PW: searchpw
     db.session.add(u1)
     db.session.add(u2)
