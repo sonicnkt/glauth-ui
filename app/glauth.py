@@ -32,7 +32,9 @@ def create_glauth_config():
     if settings.groupformat and (settings.groupformat != ""):
         new_config += "  groupformat = \"{}\"\n".format(settings.groupformat)
     if settings.sshkeyattr and (settings.sshkeyattr != ""):
-        new_config += "  sshkeyattr = \"{}\"\n".format(settings.sshkeyattr)                
+        new_config += "  sshkeyattr = \"{}\"\n".format(settings.sshkeyattr)
+    new_config += "[behaviors]\n  IgnoreCapabilities  = true\n"
+
     new_config += "\n\n## LDAP Users configuration\n"
     for user in users:
         new_config += "[[users]]\n"
@@ -43,7 +45,7 @@ def create_glauth_config():
             new_config += "  sn = \"{}\"\n".format(user.surname)
         if user.mail:
             new_config += "  mail = \"{}\"\n".format(user.mail)
-        new_config += "  unixid = {}\n".format(user.unixid)
+        new_config += "  uidnumber = {}\n".format(user.unixid)
         new_config += "  primarygroup = {}\n".format(user.primarygroup)
         new_config += "  passsha256 = \"{}\"\n".format(user.password_hash)
         if len(user.othergroups) > 0:
@@ -56,7 +58,7 @@ def create_glauth_config():
     for group in groups:
         new_config += "[[groups]]\n"
         new_config += "  name = \"{}\"\n".format(group.name)
-        new_config += "  unixid = {}\n".format(group.unixid)
+        new_config += "  gidnumber = {}\n".format(group.unixid)
         # Need to count the query results as len() is not working here.
         if group.included_in.count() > 0:
             new_config += "  includegroups = [ {} ]\n".format(",".join(str(group.unixid) for group in group.included_in))
@@ -68,10 +70,8 @@ def create_glauth_config():
     try:
         f = open(app.config['GLAUTH_CFG_PATH'], "w")
     except:
-        return False    
+        return False
     else:
         f.write(new_config)
         f.close()
     return True
-
-
