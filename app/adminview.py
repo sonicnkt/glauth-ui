@@ -91,7 +91,7 @@ class UserView(MyModelView):
                          othergroups='Other Groups', 
                          is_active='Active',
                          mail='Email Address',
-                         unixid='UnixID')
+                         unixid='UID')
     # Configure columns in list view (order and which to show)
     column_list = ('username', 'givenname', 'surname', 'mail', 'unixid', 'is_active', 'pgroup') #, 'othergroups')
     # Configure columns that are editable in list view
@@ -240,7 +240,7 @@ class GroupView(MyModelView):
                          name='Name',
                          description='Description',
                          primary='Primary Group', 
-                         unixid='UnixID',
+                         unixid='GID',
                          included_in='Included in Group(s)',
                          includes='Includes Group(s)')
     # Configure columns in list view (order and which to show)
