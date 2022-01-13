@@ -136,7 +136,7 @@ class UserView(MyModelView):
     # Customize EDIT/Create Form , obj = model object, needs to return a valid form Object in the End
     # Use this to customize which fields are available on new or edited users
     def create_form(self, obj=None):
-        form = super(UserView).create_form(obj)
+        form = super(UserView, self).create_form(obj)
         # Delete a form attribute
         delattr(form, 'send_pw_reset_link')
         # Modify query result for query form
