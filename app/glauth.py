@@ -43,11 +43,11 @@ def create_glauth_config():
             new_config += "  sn = \"{}\"\n".format(user.surname)
         if user.mail:
             new_config += "  mail = \"{}\"\n".format(user.mail)
-        new_config += "  unixid = {}\n".format(user.unixid)
+        new_config += "  uidnumber = {}\n".format(user.uidnumber)
         new_config += "  primarygroup = {}\n".format(user.primarygroup)
         new_config += "  passsha256 = \"{}\"\n".format(user.password_hash)
         if len(user.othergroups) > 0:
-            new_config += "  otherGroups = [ {} ]\n".format(",".join(str(group.unixid) for group in user.othergroups))
+            new_config += "  otherGroups = [ {} ]\n".format(",".join(str(group.gidnumber) for group in user.othergroups))
         if not user.is_active:
             new_config += "  disabled = true\n"
         new_config += "\n"
@@ -56,10 +56,10 @@ def create_glauth_config():
     for group in groups:
         new_config += "[[groups]]\n"
         new_config += "  name = \"{}\"\n".format(group.name)
-        new_config += "  unixid = {}\n".format(group.unixid)
+        new_config += "  gidnumber = {}\n".format(group.gidnumber)
         # Need to count the query results as len() is not working here.
         if group.included_in.count() > 0:
-            new_config += "  includegroups = [ {} ]\n".format(",".join(str(group.unixid) for group in group.included_in))
+            new_config += "  includegroups = [ {} ]\n".format(",".join(str(group.gidnumber) for group in group.included_in))
         # Add Group description as comment
         if group.description != None:
             new_config += "  # {}\n".format(group.description)
