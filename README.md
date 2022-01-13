@@ -1,4 +1,11 @@
-## glauth-ui
+# glauth-ui
+
+## Latest Changes: 
+
+### 2022-01-13:
+  - added support for glauth 2.x config layout
+
+## Overview
 
 **Glauth-UI** is a small flask web app i created to manage the minimal [glauth ldap server](https://github.com/glauth/glauth).
 I created this as i wanted to use glauth for authentication in several service at home and at work, but since it is readonly there is no way for users to configure their own password for example.
@@ -7,22 +14,34 @@ Since i knew a bit of python and wanted to learn flask i thought i create a smal
 
 This should be considered as a prove of concept and some glauth features arent implemented yet as i have no use for them (yet). There are probably a lot of bugs in this and if you are using it you should limit the usage to the local network only. 
 
-
-Current features:
+### Current features:
  - Stores Data (Glauth Settings, Users, Groups) in a SQL DB (Sqlite, MySQL, PostgreSQL are supported) 
  - Generates a glauth compatible config.cfg file on every change to the db
  - Small UI for Endusers to change their password, name and email or reset their password (if forgotten).
  - Admin UI for managing settings and creating users and groups
  - eMail support for forgotten passwords and new user creation
 
-Missing features:
- - Not all glauth settings and user options can be configured, following featurs and Options are missing:
-    - API
-    - User: loginShell, homeDir, sshkeys, passappsha256, otpsecret, yubikey 
+### TODO: 
+
+ - [X] Support glauth 2.X config layout (uidnumber/gidnumber instead of unixid in config)
+ - [ ] Support for new 2.X features:
+     - [ ] behaviors
+     - [ ] users.capabilities
+     - [ ] users.customattributes
+ - [ ] Support for multi file config (users, groups, settings)
+ - [ ] Rename internal DB columns to match config layout (uid/gid) with proper migration
+ - [ ] Support for bcrypt Passwords
+ 	 - [ ] make bcrypt default with some kind of migration and settings:
+ 	     - Change type automatically when user logs in next time
+       - Make bcrypt salt strength configurable
+    
+ - [ ] Support for OTP and APP Passwords
+ - [ ] Add other missing features and attributes (API, SSHKey, Shell, etc)
+
 
 ----
 
-### Installation:
+## Installation:
 
 The best installation method atm is to build the docker image with the included Dockerfile. 
 
@@ -72,7 +91,7 @@ This should be run behind a reverse proxy like nginx that handles https!
 
 ----
 
-### Environment Variables:
+## Environment Variables:
 
 These can be set using environment variables using docker.
 
@@ -118,7 +137,9 @@ Sets the Glauth config.cfg path, Default is `config.cfg` in the apps `db/` subdi
 
 ----
 
-### Usage:
+## Usage:
+
+**INFO: Screenshots are outdated !!**
 
 **Login View:**
 ![Login](img/login.png)
@@ -198,6 +219,9 @@ debug = true
   datastore = "config"
   baseDN = "dc=glauth-example,dc=com"
 
+## Glauth behaviors configuration
+[behaviors]
+  IgnoreCapabilities  = true
 
 ## LDAP Users configuration
 [[users]]
@@ -205,14 +229,14 @@ debug = true
   givenname = "Jane"
   sn = "Doe"
   mail = "jane.doe@glauth-example.com"
-  unixid = 5001
+  uidnumber = 5001
   primarygroup = 5501
   passsha256 = "6478579e37aff45f013e14eeb30b3cc56c72ccdc310123bcdf53e0333e3f416a"
   otherGroups = [ 5551,5552,5553 ]
 
 [[users]]
   name = "search"
-  unixid = 5002
+  uidnumber = 5002
   primarygroup = 5502
   passsha256 = "125844054e30fabcd4182ae69c9d7b38b58d63c067be10ab5ab883d658383316"
 
@@ -221,7 +245,7 @@ debug = true
   givenname = "John"
   sn = "Doe"
   mail = "john.doe@glauth-example.com"
-  unixid = 5004
+  uidnumber = 5004
   primarygroup = 5501
   passsha256 = "3c8580d143af4b0585a84e7497978aafe550f8687ea52ceb180e8f884fd3319d"
   otherGroups = [ 5551,5552 ]
@@ -230,26 +254,26 @@ debug = true
 ## LDAP Groups configuration
 [[groups]]
   name = "people"
-  unixid = 5501
+  gidnumber = 5501
   # primary user group
 
 [[groups]]
   name = "svcaccts"
-  unixid = 5502
+  gidnumber = 5502
   # service accounts
 
 [[groups]]
   name = "glauth_admin"
-  unixid = 5551
+  gidnumber = 5551
 
 [[groups]]
   name = "vpn"
-  unixid = 5552
+  gidnumber = 5552
   includegroups = [ 5501 ]
 
 [[groups]]
   name = "xmpp"
-  unixid = 5553
+  gidnumber = 5553
   includegroups = [ 5501 ]
   # Prosody XMPP Users
 ```
