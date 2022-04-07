@@ -115,6 +115,10 @@ Name of the glauth/ldap group which members have admin access to the ui (This ca
 
 Enable Debugging mode in Flask, never enable this for production environment! Default = `False`
 
+`BEHAVIORS_IGNORE_CAPABILITIES=`
+
+Ignore [user capabilities](https://github.com/glauth/glauth#capabilities). Default will be set to true once capability support is implemented. Default = `True`
+
 ```
 MAIL_SERVER=mail.example.com
 MAIL_PORT=587

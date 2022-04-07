@@ -12,6 +12,8 @@ class Config(object):
     SECRET_KEY   = parse_env('SECRET_KEY', 'you-will-never-guess')
     ADMIN_GROUP  = parse_env('ADMIN_GROUP', 'glauth_admin')
 
+    BEHAVIORS_IGNORE_CAPABILITIES = parse_env('BEHAVIORS_IGNORE_CAPABILITIES', 'True', bool)
+
     # MAIL Config
     MAIL_SERVER   = parse_env('MAIL_SERVER')
     MAIL_PORT     = parse_env('MAIL_PORT', '25', int)

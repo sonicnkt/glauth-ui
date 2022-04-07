@@ -34,9 +34,9 @@ def create_glauth_config():
     if settings.sshkeyattr and (settings.sshkeyattr != ""):
         new_config += "  sshkeyattr = \"{}\"\n".format(settings.sshkeyattr)
     
-    # Hard config for behaviors until this is available in the settings menu.
-    new_config += "\n\n## Glauth behaviors configuration\n"
-    new_config += "[behaviors]\n  IgnoreCapabilities  = true\n"               
+    if app.config['BEHAVIORS_IGNORE_CAPABILITIES']:
+        new_config += "\n\n## Glauth behaviors configuration\n"
+        new_config += "[behaviors]\n  IgnoreCapabilities  = true\n"
     
     new_config += "\n\n## LDAP Users configuration\n"
     for user in users:
