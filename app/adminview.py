@@ -1,6 +1,7 @@
 from app import app, db #, admin
 from app.models import User, Group, Settings
 from app.forms import EditGlauthForm
+from config import Config
 from flask_admin import Admin, AdminIndexView, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_login import current_user, login_user, logout_user
@@ -399,7 +400,7 @@ class AdminHomeView(MyAdminIndexView):
 
 
 # Initialize Flask ADMIN
-admin = Admin(app, name='{} - Admin'.format(app.config['APPNAME']),template_mode='bootstrap4', index_view=AdminHomeView(menu_icon_type='fa', menu_icon_value='fa-home'))
+admin = Admin(app, name='{} - Admin'.format(Config.APPNAME),template_mode='bootstrap4', index_view=AdminHomeView(menu_icon_type='fa', menu_icon_value='fa-home'))
 
 # Add model views
 admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-users', name="Users"))

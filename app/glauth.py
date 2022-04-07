@@ -1,6 +1,6 @@
 # Generate glauth config
-from app import app
 from app.models import User, Group, Settings
+from config import Config
 from time import strftime, localtime
 
 def create_glauth_config():
@@ -34,9 +34,8 @@ def create_glauth_config():
     if settings.sshkeyattr and (settings.sshkeyattr != ""):
         new_config += "  sshkeyattr = \"{}\"\n".format(settings.sshkeyattr)
     
-    if app.config['BEHAVIORS_IGNORE_CAPABILITIES']:
-        new_config += "\n\n## Glauth behaviors configuration\n"
-        new_config += "[behaviors]\n  IgnoreCapabilities  = true\n"
+    new_config += "\n\n## Glauth behaviors configuration\n"
+    new_config += f"[behaviors]\n  IgnoreCapabilities  = {str(Config.BEHAVIORS_IGNORE_CAPABILITIES).lower()}\n"
     
     new_config += "\n\n## LDAP Users configuration\n"
     for user in users:
@@ -70,7 +69,7 @@ def create_glauth_config():
             new_config += "  # {}\n".format(group.description)
         new_config += "\n"
 
-    f = open(app.config['GLAUTH_CFG_PATH'], "w")
+    f = open(Config.GLAUTH_CFG_PATH, "w")
     f.write(new_config)
     f.close()
 
