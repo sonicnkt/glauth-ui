@@ -1,6 +1,8 @@
 FROM python:3.10-alpine
 
-RUN adduser -D ldap
+ARG PUID=1000
+
+RUN adduser -D -u ${PUID} ldap
 
 WORKDIR /home/ldap
 
