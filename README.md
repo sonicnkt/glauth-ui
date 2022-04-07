@@ -97,7 +97,7 @@ These can be set using environment variables using docker.
 
 `SECRET_KEY=`
 
-Should be a long random string to protect against [CSRF attacks](https://flask-wtf.readthedocs.io/en/stable/form.html) and should definatly be set in a production environment.
+Should be a long random string to protect against [CSRF attacks](https://flask-wtf.readthedocs.io/en/1.0.x/form/#secure-form) and should definatly be set in a production environment.
 
 `APPNAME=`
 
