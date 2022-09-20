@@ -2,40 +2,41 @@ from flask import Flask
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 # https://bootstrap-flask.readthedocs.io
-from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap4
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from flask_mail import Mail
+from flask_mailman import Mail
 from secrets import token_urlsafe
 import hashlib
 import os
 import click
 
 app = Flask(__name__)
-app.config.from_object(Config)
+app.config.from_object(Config.FLASK)
+app.config.from_prefixed_env('FLASK')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db, render_as_batch=True)
 login = LoginManager(app)
 login.login_view = 'login'
 mail = Mail(app)
-bootstrap = Bootstrap(app)
+bootstrap = Bootstrap4(app)
 
 
 if not app.debug:
-    if app.config['MAIL_SERVER']:
+    if Config.MAIL_SERVER:
         auth = None
-        if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:
-            auth = (app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
-        secure = None
-        if app.config['MAIL_USE_TLS']:
-            secure = ()
+        if Config.MAIL_USERNAME or Config.MAIL_PASSWORD:
+            auth = (Config.MAIL_USERNAME, Config.MAIL_PASSWORD)
         mail_handler = SMTPHandler(
-            mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
-            fromaddr='no-reply@' + app.config['MAIL_SERVER'],
-            toaddrs=app.config['MAIL_ADMIN'], subject='{} - Failure'.format(app.config['APPNAME']),
-            credentials=auth, secure=secure)
+            mailhost    = (Config.MAIL_SERVER, Config.MAIL_PORT),
+            fromaddr    = Config.MAIL_ERROR_REPORT_FROM,
+            toaddrs     = Config.MAIL_ERROR_REPORT_TO,
+            subject     = '{} - Failure'.format(Config.APPNAME),
+            credentials = auth,
+            secure      = () if Config.MAIL_USE_TLS else None
+        )
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
     # Only log to file if configure in UI?
@@ -51,7 +52,7 @@ if not app.debug:
     app.logger.setLevel(logging.INFO)
     app.logger.info('Glauth UI')       
 
-    if app.config['SECRET_KEY'] == 'you-will-never-guess':
+    if Config.SECRET_KEY == 'you-will-never-guess':
         app.logger.warning('No unique SECRET_KEY set to secure the application.\n \
                             You can the following randomly generated key:\n \
                             {}'.format(token_urlsafe(50)))

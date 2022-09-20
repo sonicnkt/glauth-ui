@@ -93,11 +93,21 @@ This should be run behind a reverse proxy like nginx that handles https!
 
 ## Environment Variables:
 
-These can be set using environment variables using docker.
+These can be set using environment variables. You may also customize any [Flask](https://flask.palletsprojects.com/en/2.1.x/config/) configuration key by prefixing the environment variable name with `FLASK_`.
+
+The default configuration of the following Flask modules may also be overriden via the `FLASK_` prefix:
+
+- [Flask-Admin](https://github.com/flask-admin/flask-admin)
+- [Flask-Login](https://github.com/maxcountryman/flask-login)
+- [Flask-Mail](https://pythonhosted.org/Flask-Mail/#configuring-flask-mail)
+- [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/)
+- [Flask-WTF](https://flask-wtf.readthedocs.io/en/1.0.x/form/#secure-form)
+
+Refer to `config.py` for a complete list of of available configuration. The most commonly used ones are lited below.
 
 `SECRET_KEY=`
 
-Should be a long random string to protect against [CSRF attacks](https://flask-wtf.readthedocs.io/en/stable/form.html) and should definatly be set in a production environment.
+Should be a long random string to protect against [CSRF attacks](https://flask-wtf.readthedocs.io/en/1.0.x/form/#secure-form) and should definatly be set in a production environment.
 
 `APPNAME=`
 
@@ -114,6 +124,10 @@ Name of the glauth/ldap group which members have admin access to the ui (This ca
 `FLASK_DEBUG=`
 
 Enable Debugging mode in Flask, never enable this for production environment! Default = `False`
+
+`BEHAVIORS_IGNORE_CAPABILITIES=`
+
+Ignore [user capabilities](https://github.com/glauth/glauth#capabilities). Default will be set to true once capability support is implemented. Default = `True`
 
 ```
 MAIL_SERVER=mail.example.com

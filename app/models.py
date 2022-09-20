@@ -1,4 +1,5 @@
-from app import app, db, generate_password_hash, check_password_hash, login
+from app import db, generate_password_hash, check_password_hash, login
+from config import Config
 from flask_login import UserMixin
 from time import time
 import jwt
@@ -68,7 +69,7 @@ class User(UserMixin, db.Model):
     @property
     def is_admin(self):
         # checks if the name of any group matches the configured ADMIN_GROUP name
-        if [group for group in self.othergroups if group.name == app.config['ADMIN_GROUP']]:
+        if [group for group in self.othergroups if group.name == Config.ADMIN_GROUP]:
             return True
         return False
     
@@ -87,12 +88,12 @@ class User(UserMixin, db.Model):
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
-            app.config['SECRET_KEY'], algorithm='HS256')
+            Config.SECRET_KEY, algorithm='HS256')
 
     def get_new_account_token(self, expires_in=86400):
         return jwt.encode(
             {'username': self.username, 'exp': time() + expires_in},
-            app.config['SECRET_KEY'], algorithm='HS256')
+            Config.SECRET_KEY, algorithm='HS256')
 
     def in_groups(self,*allowed_groups):
         """Check if the user is in a group
@@ -108,7 +109,7 @@ class User(UserMixin, db.Model):
     @staticmethod
     def verify_reset_password_token(token):
         try:
-            id = jwt.decode(token, app.config['SECRET_KEY'],
+            id = jwt.decode(token, Config.SECRET_KEY,
                             algorithms=['HS256'])['reset_password']
         except:
             return None
@@ -117,7 +118,7 @@ class User(UserMixin, db.Model):
     @staticmethod
     def verify_new_account_token(token):
         try:
-            username = jwt.decode(token, app.config['SECRET_KEY'],
+            username = jwt.decode(token, Config.SECRET_KEY,
                             algorithms=['HS256'])['username']
         except:
             return None
