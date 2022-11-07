@@ -73,12 +73,13 @@ class EditGlauthForm(FlaskForm):
     ldaps_cert = StringField('Certificate', render_kw={"placeholder": "/path/to/server.crt"}) # Required if ldaps_enabled
     ldaps_key = StringField('Key', render_kw={"placeholder": "/path/to/server.key"}) # Required if ldaps_enabled
     basedn = StringField('BaseDN', render_kw={"placeholder": "dc=glauth,dc=com"}) # Data Required
-    nameformat = StringField('Name Format', render_kw={"placeholder": "cn"}, validators=[Length(max=4)], 
-                             description='Configure to customize dn format.') 
-    groupformat = StringField('Group Format', render_kw={"placeholder": "ou"}, validators=[Length(max=2)], 
-                             description='Configure to customize dn format.') 
-    sshkeyattr = StringField('SSH-Key Attribute', render_kw={"placeholder": "sshPublicKey"}, 
+    nameformat = StringField('Name Format', render_kw={"placeholder": "cn"}, validators=[Length(max=4)],
+                             description='Configure to customize dn format.')
+    groupformat = StringField('Group Format', render_kw={"placeholder": "ou"}, validators=[Length(max=2)],
+                             description='Configure to customize dn format.')
+    sshkeyattr = StringField('SSH-Key Attribute', render_kw={"placeholder": "sshPublicKey"},
                              description='Configure ssh-key attribute name.')
+    anonymousDSE = BooleanField('AnonymousDSE', description='Allow AnonymousDSE, useful for SSSD')
     submit = SubmitField('Save Settings')
     
     # Add Custom Validation, either ldap or ldaps must be enabled?
