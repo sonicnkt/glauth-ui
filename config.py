@@ -1,10 +1,16 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+def optional_str_to_int(s):
+    if s is None: return None
+    return int(s)
+
+
 class Config(object):
     APPNAME = os.environ.get('APPNAME') or 'Glauth UI'
     ORGANISATION = os.environ.get('ORGANISATION') or 'Glauth UI - Team'
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+    BCRYPT_ROUNDS = optional_str_to_int(os.environ.get('BCRYPT_ROUNDS')) or 14
     ADMIN_GROUP = os.environ.get('ADMIN_GROUP') or 'glauth_admin'
 
     # MAIL Config
@@ -26,3 +32,4 @@ class Config(object):
     
     # FLASK ADMIN STUFF
     FLASK_ADMIN_FLUID_LAYOUT = False
+
