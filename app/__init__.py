@@ -9,6 +9,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from secrets import token_urlsafe
+from passlib.hash import bcrypt
 import hashlib
 import os
 import click
@@ -59,12 +60,14 @@ if not app.debug:
 
 # Security - Generate GLAUTH compatible password hashs
 def generate_password_hash(password):
-    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+    return bcrypt.using(rounds=app.config['BCRYPT_ROUNDS']).hash(password)
 
 def check_password_hash(hash, password):
-    if (hash != hashlib.sha256(password.encode('utf-8')).hexdigest()):
-        return False
-    return True
+    if not hash.startswith('$'): # plain SHA256 hashes were stored like this
+        return hash == hashlib.sha256(password.encode('utf-8')).hexdigest()
+        # TODO: Re-hash password with bcrypt and replace stored hash
+
+    return bcrypt.verify(password, hash)
 
 from app import routes, models, glauth, adminview, errors
 
@@ -76,4 +79,5 @@ def createdbdata():
         click.echo('Creating Example DB')
         models.create_basic_db()
     else:
-        app.logger.info('Data in DB allready exists.') 
+        app.logger.info('Data in DB allready exists.')
+

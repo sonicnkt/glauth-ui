@@ -51,7 +51,10 @@ def create_glauth_config():
             new_config += "  mail = \"{}\"\n".format(user.mail)
         new_config += "  uidnumber = {}\n".format(user.unixid)
         new_config += "  primarygroup = {}\n".format(user.primarygroup)
-        new_config += "  passsha256 = \"{}\"\n".format(user.password_hash)
+        if not user.password_hash.startswith('$'): # SHA256 hashes were stored like this
+            new_config += "  passsha256 = \"{}\"\n".format(user.password_hash)
+        else: # bcrypt hashes have to be put into the config in hex representation
+            new_config += "  passbcrypt = \"{}\"\n".format(user.password_hash.encode("utf-8").hex())
         if len(user.othergroups) > 0:
             new_config += "  otherGroups = [ {} ]\n".format(",".join(str(group.unixid) for group in user.othergroups))
         if not user.is_active:
