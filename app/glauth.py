@@ -33,6 +33,7 @@ def create_glauth_config():
         new_config += "  groupformat = \"{}\"\n".format(settings.groupformat)
     if settings.sshkeyattr and (settings.sshkeyattr != ""):
         new_config += "  sshkeyattr = \"{}\"\n".format(settings.sshkeyattr)
+    new_config += "  AnonymousDSE = {}\n".format(str(settings.anonymousDSE).lower())
     
     # Hard config for behaviors until this is available in the settings menu.
     new_config += "\n\n## Glauth behaviors configuration\n"
@@ -73,5 +74,3 @@ def create_glauth_config():
     f = open(app.config['GLAUTH_CFG_PATH'], "w")
     f.write(new_config)
     f.close()
-
-

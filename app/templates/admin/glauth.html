@@ -26,13 +26,14 @@
 <div class="form-group row">
     <label class="form-control-label  col-lg-2" for="dnformat">DN Format</label>
     <div class=" col-lg-6">
-        <input class="form-control" id="dnformat" name="dnformat" placeholder="ou" type="text" value="{{ dnformat }}" readonly>        
+        <input class="form-control" id="dnformat" name="dnformat" placeholder="ou" type="text" value="{{ dnformat }}" readonly>
     </div>
     <div class="offset-lg-2 col-lg-6">
         <small class="form-text text-muted">Current dn format.</small>
     </div>
 </div>
 {{ render_field(form.sshkeyattr, form_type="horizontal", horizontal_columns=('lg', 2, 6)) }}
+{{ render_field(form.anonymousDSE) }}
 {{ render_field(form.submit) }}
 </form>
 

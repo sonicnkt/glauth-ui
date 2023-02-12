@@ -31,6 +31,8 @@ class Settings(db.Model):
     nameformat = db.Column(db.String(4)) # Default "cn"
     groupformat = db.Column(db.String(4)) # Default "ou"
     sshkeyattr = db.Column(db.String(20)) # Default "ipaSshPubKey"
+    anonymousDSE = db.Column(db.Boolean, nullable=False, default=False)
+
     def __repr__(self):
         return 'GLAUTH Config Object'
 
@@ -48,7 +50,7 @@ class Group(db.Model):
                             backref=db.backref('includes', lazy='dynamic'), lazy='dynamic')
     def __repr__(self):
         return '{}'.format(self.name)
-            
+
 
 
 class User(UserMixin, db.Model):
@@ -71,7 +73,7 @@ class User(UserMixin, db.Model):
         if [group for group in self.othergroups if group.name == app.config['ADMIN_GROUP']]:
             return True
         return False
-    
+
     def __repr__(self):
         if self.givenname and self.username:
             return '{} {}'.format(self.givenname, self.surname)
@@ -80,7 +82,7 @@ class User(UserMixin, db.Model):
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
-    
+
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
@@ -131,7 +133,7 @@ def load_user(id):
 
 def create_basic_db():
     settings = Settings(debug=True, ldap_enabled=True, ldap_listen='0.0.0.0:389', basedn='dc=glauth-example,dc=com')
-    
+
     db.session.add(settings)
 
     og1 = Group(name='glauth_admin', unixid=5551, description='Glauth UI admin group')
@@ -142,7 +144,7 @@ def create_basic_db():
 
     pg1 = Group(name='people', unixid=5501, primary=True, description='primary user group', includes=[ og2 ])
     pg2 = Group(name='svcaccts', unixid=5502, primary=True, description='service accounts')
-   
+
     db.session.add(pg1)
     db.session.add(pg2)
 
@@ -152,5 +154,5 @@ def create_basic_db():
     # PW: searchpw
     db.session.add(u1)
     db.session.add(u2)
-    
+
     db.session.commit()

@@ -363,6 +363,7 @@ class GlauthConfig(MyBaseView):
             settings.nameformat = form.nameformat.data
             settings.groupformat = form.groupformat.data
             settings.sshkeyattr = form.sshkeyattr.data
+            settings.anonymousDSE = form.anonymousDSE.data
 
             db.session.commit()
             try:
@@ -384,6 +385,7 @@ class GlauthConfig(MyBaseView):
             form.nameformat.data =  settings.nameformat
             form.groupformat.data = settings.groupformat
             form.sshkeyattr.data =  settings.sshkeyattr
+            form.anonymousDSE.data =  settings.anonymousDSE
         return self.render('admin/glauth.html', form=form, dnformat=dnformat)
 
 class AdminHomeView(MyAdminIndexView):
