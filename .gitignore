@@ -2,6 +2,8 @@
 .vscode/
 # Python Stuff
 venv/
+.venv/
+glauth/
 __pycache__/
 db/**
 docker-data/
@@ -9,6 +11,5 @@ logs/
 .flaskenv
 .pylintrc
 docker-compose.yaml
+requirements.old.txt
 notes.txt
-
-
