@@ -15,7 +15,7 @@ COPY . ./glauth-ui
 
 WORKDIR /workspaces/glauth-ui
 
-RUN pip3 install -r requirements.txt --use-deprecated=legacy-resolver
+RUN mkdir -p /workspaces/glauth-ui/db && pip3 install -r requirements.txt --use-deprecated=legacy-resolver
 
 # Set the default shell to bash instead of sh
 ENV SHELL /bin/bash
