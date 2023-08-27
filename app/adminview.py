@@ -8,7 +8,7 @@ from flask import flash, redirect, url_for, request, abort
 from app.email import send_password_reset_email, send_account_invite
 
 # Custom Forms and Fields for FlaskAdmin
-from wtforms import PasswordField, BooleanField, Form
+from wtforms import PasswordField, BooleanField, Form, TextAreaField
 from wtforms.validators import Length, Email, ValidationError
 import re
 
@@ -91,17 +91,18 @@ class UserView(MyModelView):
                          othergroups='Other Groups', 
                          is_active='Active',
                          mail='Email Address',
-                         unixid='UID')
+                         unixid='UID',
+                         raw_addition_user_config='Raw Additional Config')
     # Configure columns in list view (order and which to show)
     column_list = ('username', 'givenname', 'surname', 'mail', 'unixid', 'is_active', 'pgroup') #, 'othergroups')
     # Configure columns that are editable in list view
-    column_editable_list = ['username', 'mail', 'givenname', 'surname', 'is_active']
+    column_editable_list = ['username', 'mail', 'givenname', 'surname', 'is_active', 'raw_addition_user_config']
     # Configure columns that a searchable
     column_searchable_list = column_editable_list
     # Configure columns to exclude in list view
     column_exclude_list = ['password_hash']
     # Details View List
-    column_details_list = ('username', 'givenname', 'surname', 'mail', 'unixid', 'is_active', 'pgroup')
+    column_details_list = ('username', 'givenname', 'surname', 'mail', 'unixid', 'is_active', 'pgroup', 'raw_addition_user_config')
 
     # Configure colums to exclude in edit/create view
     form_excluded_columns = column_exclude_list
@@ -113,7 +114,8 @@ class UserView(MyModelView):
                                   description='TEMP'),
         'send_pw_reset_link': BooleanField('Send Password Reset Link'),
         # Make this a button in the list view?
-        'send_invite_link': BooleanField('Send Invite Link')
+        'send_invite_link': BooleanField('Send Invite Link'),
+        'raw_addition_user_config': TextAreaField('Raw Additional Config'),  # Use TextAreaField for raw_addition_user_config
     }
 
     # Add Validators to form
@@ -125,7 +127,7 @@ class UserView(MyModelView):
     )
 
     # Configure which form fields to show
-    form_columns = ('send_pw_reset_link', 'send_invite_link', 'username', 'password', 'givenname', 'surname', 'mail', 'unixid', 'is_active', 'pgroup', 'othergroups')
+    form_columns = ('send_pw_reset_link', 'send_invite_link', 'username', 'password', 'givenname', 'surname', 'mail', 'unixid', 'is_active', 'raw_addition_user_config', 'pgroup', 'othergroups')
 
     # Configure which columns are shown in detail view
     column_details_exclude_list = ['password_hash']

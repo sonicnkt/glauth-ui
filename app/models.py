@@ -43,7 +43,7 @@ class Group(db.Model):
     unixid = db.Column(db.Integer, unique=True, nullable=False)
     primary = db.Column(db.Boolean, default=False, nullable=False)
     description = db.Column(db.String(255))
-    p_users = db.relationship('User', backref='pgroup', lazy='dynamic')
+    p_users = db.relationship('User', back_populates='pgroup')
     included_in = db.relationship('Group', secondary=included_groups,
                             primaryjoin=(included_groups.c.include_id == unixid),
                             secondaryjoin=(included_groups.c.included_in_id == unixid),
@@ -64,8 +64,10 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(64), nullable=False)
     # add activation date?
     primarygroup = db.Column(db.Integer, db.ForeignKey('group.unixid'), nullable=False)
+    pgroup = db.relationship('Group', back_populates='p_users')
     othergroups = db.relationship('Group', secondary=othergroups_users,
                             backref=db.backref('o_users', lazy='dynamic'))
+    raw_addition_user_config = db.Column(db.String(512*128), nullable=False)
 
     @property
     def is_admin(self):
@@ -148,9 +150,9 @@ def create_basic_db():
     db.session.add(pg1)
     db.session.add(pg2)
 
-    u1 = User(username='j_doe', givenname='Jane', surname='Doe', unixid=5001, password_hash='6478579e37aff45f013e14eeb30b3cc56c72ccdc310123bcdf53e0333e3f416a', mail='jane.doe@glauth-example.com', pgroup=pg1, othergroups=[og1])
+    u1 = User(username='j_doe', givenname='Jane', surname='Doe', unixid=5001, password_hash='6478579e37aff45f013e14eeb30b3cc56c72ccdc310123bcdf53e0333e3f416a', mail='jane.doe@glauth-example.com', pgroup=pg1, othergroups=[og1], raw_addition_user_config='')
     # PW: dogood
-    u2 = User(username='search', unixid=5002, password_hash='125844054e30fabcd4182ae69c9d7b38b58d63c067be10ab5ab883d658383316', pgroup=pg2)
+    u2 = User(username='search', unixid=5002, password_hash='125844054e30fabcd4182ae69c9d7b38b58d63c067be10ab5ab883d658383316', pgroup=pg2, raw_addition_user_config='')
     # PW: searchpw
     db.session.add(u1)
     db.session.add(u2)
