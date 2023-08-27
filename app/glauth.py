@@ -56,6 +56,8 @@ def create_glauth_config():
             new_config += "  otherGroups = [ {} ]\n".format(",".join(str(group.unixid) for group in user.othergroups))
         if not user.is_active:
             new_config += "  disabled = true\n"
+        if len(user.raw_addition_user_config) > 0:
+            new_config += '\n'.join([f"  {line}" for line in user.raw_addition_user_config.split('\n')])
         new_config += "\n"
 
     new_config += "## LDAP Groups configuration\n"

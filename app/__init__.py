@@ -2,7 +2,7 @@ from flask import Flask
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 # https://bootstrap-flask.readthedocs.io
-from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap4
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -20,7 +20,7 @@ migrate = Migrate(app, db, render_as_batch=True)
 login = LoginManager(app)
 login.login_view = 'login'
 mail = Mail(app)
-bootstrap = Bootstrap(app)
+bootstrap = Bootstrap4(app)
 
 
 if not app.debug:
